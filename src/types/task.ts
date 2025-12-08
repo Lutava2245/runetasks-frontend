@@ -8,3 +8,15 @@ export interface TaskResponse {
   taskCoins: number
   skillName: string
 }
+
+export interface TaskCreateRequest {
+  title: string
+  description: string
+  difficulty: string
+  skillName: string
+}
+
+export interface TaskEditRequest {
+  title: string
+  description: string
+}
