@@ -1,4 +1,4 @@
-import { UserCreateRequest, UserResponse } from "@/src/types/user";
+import { ChangePasswordRequest, UserCreateRequest, UserResponse, UserUpdateRequest } from "@/src/types/user";
 import { api } from "./api";
 
 export const getAuthenticatedUser = () => {
@@ -7,4 +7,8 @@ export const getAuthenticatedUser = () => {
 
 export const registerUser = (request: UserCreateRequest) => {
   return api.post('/users/register', request);
+}
+
+export const selectAvatar = (avatarName: string) => {
+  return api.patch('/users/avatar/' + avatarName);
 }
