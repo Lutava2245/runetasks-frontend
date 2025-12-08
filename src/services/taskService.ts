@@ -12,3 +12,15 @@ export const registerTask = (request: TaskCreateRequest) => {
 export const editTask = (request: TaskEditRequest, taskId: number) => {
   return api.put('/tasks/' + taskId, request)
 }
+
+export const completeTask = (taskId: number) => {
+  return api.patch('/tasks/' + taskId + '/complete');
+}
+
+export const blockTask = (taskId: number) => {
+  return api.patch('/tasks/' + taskId + '/block');
+}
+
+export const deleteTask = (taskId: number) => {
+  return api.delete('/tasks/' + taskId);
+}
