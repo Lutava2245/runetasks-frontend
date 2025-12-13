@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import Button from "./Button";
-import FormField from "./FormField";
+import Button from "./ui/Button";
+import FormField from "./ui/FormField";
 import { useTasks } from "../contexts/TaskContext";
 import { TaskEditRequest, TaskResponse } from "../types/task";
 import { editTask } from "../services/taskService";
@@ -13,8 +13,8 @@ interface TaskEditFormProps {
 
 export default function TaskEditForm({ onClose, task }: TaskEditFormProps) {
   const { refreshTasks } = useTasks();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState(task?.title || "");
+  const [description, setDescription] = useState(task?.description || "");
 
   const handleEditTask = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,13 +32,13 @@ export default function TaskEditForm({ onClose, task }: TaskEditFormProps) {
       try {
         const response = await editTask(newTask, task.id);
 
-        if (response.status === 201) {
-          toast.success("Tarefa criada com sucesso!");
+        if (response.status === 204) {
+          toast.success("Tarefa salva com sucesso!");
           await refreshTasks();
           onClose();
         }
       } catch (error) {
-        toast.error("Erro ao criar tarefa. Tente novamente.");
+        toast.error("Erro ao salvar tarefa. Tente novamente.");
         console.error(error);
       }
     }

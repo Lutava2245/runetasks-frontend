@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Button from "@/src/components/Button"
+import Button from "@/src/components/ui/Button"
 import { useEffect, useState } from "react";
 import AuthModal from "@/src/components/AuthModal";
 import logo from "@/src/assets/logo.png";

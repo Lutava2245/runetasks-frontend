@@ -1,8 +1,8 @@
 'use client';
 
-import Badge from "@/src/components/Badge";
-import Button from "@/src/components/Button";
-import Card from "@/src/components/Card";
+import Badge from "@/src/components/ui/Badge";
+import Button from "@/src/components/ui/Button";
+import Card from "@/src/components/ui/Card";
 import TaskModal from "@/src/components/TaskModal";
 import { useTasks } from "@/src/contexts/TaskContext";
 import { completeTask, blockTask, deleteTask } from "@/src/services/taskService";
@@ -67,8 +67,7 @@ const Tasks = () => {
   };
 
   return (
-    <>
-      <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -78,7 +77,6 @@ const Tasks = () => {
             <p className="text-muted-foreground text-xs">Organize estudos e ganhe XP</p>
           </div>
           <Button
-            variant="primary"
             onClick={toggleCreate}
             className="text-base py-1.5 px-4"
           >
@@ -110,7 +108,7 @@ const Tasks = () => {
                         {task.taskXP === 50 && "Difícil"}
                       </Badge>
                     </div>
-                    <p className="text-muted-foreground text-xs mb-2">{task.description || null }</p>
+                    <p className="text-muted-foreground text-xs mb-2">{task.description || null}</p>
                     <div className="flex items-center gap-3 text-xs">
                       <span className="text-primary font-bold">{task.skillName}</span>
                       <span className="text-secondary font-bold">⚡ +{task.taskXP} XP</span>
@@ -200,7 +198,6 @@ const Tasks = () => {
         task={targetTask}
       />
     </div>
-    </>
   );
 };
 

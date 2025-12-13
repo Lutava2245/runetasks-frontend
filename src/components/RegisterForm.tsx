@@ -5,8 +5,8 @@ import { toast } from "sonner";
 import { useAuth } from "@/src/contexts/AuthContext";
 import { registerUser } from "@/src/services/userService";
 import { UserCreateRequest } from "@/src/types/user";
-import FormField from "./FormField";
-import Button from "./Button";
+import FormField from "./ui/FormField";
+import Button from "./ui/Button";
 
 export default function RegisterForm() {
   const { login } = useAuth();

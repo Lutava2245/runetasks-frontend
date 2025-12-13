@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
-import Button from './Button';
+import Button from './ui/Button';
 
 type AuthMode = 'login' | 'register';
 

@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { toast } from "sonner";
-import FormField from './FormField';
+import FormField from './ui/FormField';
 import { useAuth } from '../contexts/AuthContext';
-import Button from './Button';
+import Button from './ui/Button';
 
 export default function LoginForm() {
   const {login} = useAuth();

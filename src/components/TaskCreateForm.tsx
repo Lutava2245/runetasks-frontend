@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import Badge from "./Badge";
-import Button from "./Button";
-import FormField from "./FormField";
-import Select from "./Select";
-import Slider from "./Slider";
+import Badge from "./ui/Badge";
+import Button from "./ui/Button";
+import FormField from "./ui/FormField";
+import Select from "./ui/Select";
+import Slider from "./ui/Slider";
 import { TaskCreateRequest } from "../types/task";
 import { registerTask } from "../services/taskService";
 import { useTasks } from "../contexts/TaskContext";

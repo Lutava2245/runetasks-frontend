@@ -46,7 +46,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               key={option.id}
               value={option.value}
             >
-              {option.name}
+              {option?.name || option.value}
             </option>
           ))}
         </select>

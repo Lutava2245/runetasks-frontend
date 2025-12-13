@@ -1,9 +1,9 @@
 'use client';
 
-import Badge from "@/src/components/Badge";
-import Button from "@/src/components/Button";
-import Card from "@/src/components/Card";
-import Progress from "@/src/components/Progress";
+import Badge from "@/src/components/ui/Badge";
+import Button from "@/src/components/ui/Button";
+import Card from "@/src/components/ui/Card";
+import Progress from "@/src/components/ui/Progress";
 import { useAuth } from "@/src/contexts/AuthContext";
 import { useAvatars } from "@/src/contexts/AvatarContext";
 import { useSkills } from "@/src/contexts/SkillContext";
