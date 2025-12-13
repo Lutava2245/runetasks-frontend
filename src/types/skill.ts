@@ -9,3 +9,8 @@ export interface SkillResponse {
   totalXP: number
   totalTasks: number
 }
+
+export interface SkillRequest {
+  name: string
+  icon: string
+}
