@@ -9,6 +9,14 @@ export const registerUser = (request: UserCreateRequest) => {
   return api.post('/users/register', request);
 }
 
+export const updateUser = (userId: number, request: UserUpdateRequest) => {
+  return api.put('/users/' + userId, request);
+}
+
+export const changePassword = (userId: number, request: ChangePasswordRequest) => {
+  return api.patch('/users/' + userId + '/password', request);
+}
+
 export const selectAvatar = (avatarName: string) => {
   return api.patch('/users/avatar/' + avatarName);
 }

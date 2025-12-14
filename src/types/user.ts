@@ -20,3 +20,11 @@ export interface UserCreateRequest {
   password: string
   email: string
 }
+
+export interface UserUpdateRequest {
+  name: string
+}
+
+export interface ChangePasswordRequest {
+  newPassword: string
+}
