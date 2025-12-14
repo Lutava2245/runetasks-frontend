@@ -85,11 +85,8 @@ const Skills = () => {
 
         <div className="grid md:grid-cols-2 gap-4 mb-4">
           {skills.map((skill) => (
-            <button onClick={() => toggleEdit(skill.id)}>
-              <Card
-                key={skill.id}
-                className="p-4 bg-card border-2 border-border/50 hover:border-blue-600 transition-all pixel-corners"
-              >
+            <button key={skill.id} onClick={() => toggleEdit(skill.id)}>
+              <Card className="p-4 bg-card border-2 border-border/50 hover:border-blue-600 transition-all pixel-corners">
                 <div className="flex items-start gap-3 mb-3">
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">

@@ -75,11 +75,9 @@ export default function Home() {
             </h2>
 
             <div className="flex space-x-4 mb-10">
-              <Link href="/login" passHref>
-                <Button variant="primary" className="text-lg px-8">
-                  Comece agora
-                </Button>
-              </Link>
+              <Button variant="primary" className="text-lg px-8" onClick={() => setIsModalOpen(true)}>
+                Comece agora
+              </Button>
               <Link href="#about" passHref>
                 <Button variant="outline" className="text-lg px-8">
                   Saiba mais
