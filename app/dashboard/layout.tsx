@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import logo from "@/src/assets/logo.png";
 import { useEffect, useState } from 'react';
-import { Menu } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import clsx from "clsx";
 import { useIsLargeScreen } from "@/src/hooks/useMediaQuery";
 
@@ -47,8 +47,8 @@ export default function DashboardLayout({ children }: Readonly<{
           <div className="flex min-h-screen bg-gray-50">
             {isLargeScreen && (
               <aside
-                style={{ width: isDrawerCollapsed ? '80px' : '256px' }} // CSS Inline é infalível
-                className="bg-gray-900 text-white fixed inset-y-0 left-0 z-50 transition-all duration-300 flex flex-col"
+                style={{ width: isDrawerCollapsed ? '80px' : '256px' }}
+                className="bg-gray-900 text-white fixed inset-y-0 left-0 z-40 transition-all duration-300 flex flex-col"
               >
                 <Sidebar
                   isCollapsed={isDrawerCollapsed}
@@ -57,39 +57,42 @@ export default function DashboardLayout({ children }: Readonly<{
               </aside>
             )}
 
-            <div className={clsx(
-              "flex flex-col flex-1 transition-all duration-300",
-              "lg:ml-20",
-              !isDrawerCollapsed && "lg:ml-64"
-            )}>
-              <header className="lg:hidden flex items-center justify-between p-4 bg-gray-900 shadow-sm">
-                <div className="flex items-center space-x-2 text-xl font-bold hover:text-blue-800 transition duration-150">
-                  <h1 className="text-xl font-bold text-white">RuneTasks</h1>
-                  <Image
-                    src={logo}
-                    alt="Logo RuneTasks"
-                    width={32}
-                    height={32}
-                  />
-                </div>
-                <button onClick={() => setIsDrawerOpen(true)} className="p-1 order-first">
-                  <Menu className="w-6 h-6" />
-                </button>
-              </header>
+            <div className="flex flex-col flex-1"
+              style={{ marginLeft: isLargeScreen ? (isDrawerCollapsed ? '80px' : '256px') : '0' }}
+            >
+              {!isLargeScreen && (
+                <header className="flex items-center justify-between p-4 bg-gray-900 shadow-sm sticky top-0 z-110">
+                  <button onClick={() => setIsDrawerOpen(!isDrawerOpen)} className="p-1 z-120">
+                    {isDrawerOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                  </button>
+                  <div className="flex items-center space-x-2">
+                    <h1 className="text-xl font-bold text-white">RuneTasks</h1>
+                    <Image src={logo} alt="Logo" width={32} height={32} />
+                  </div>
+                </header>
+              )}
 
               <main className="grow p-4 lg:p-8">
                 {children}
               </main>
             </div>
 
-            {isDrawerOpen && (
-              <div className="fixed inset-0 z-40 lg:hidden">
+            {!isLargeScreen && (
+              <div className={clsx(
+                "fixed inset-0 z-100",
+                isDrawerOpen ? "visible" : "invisible delay-500"
+              )}>
                 <div
-                  className="fixed inset-0 bg-black/50 transition-opacity"
+                  className={clsx(
+                    "fixed inset-0 bg-black/50 transition-opacity duration-300",
+                    isDrawerOpen ? "opacity-100" : "opacity-0"
+                  )}
                   onClick={() => setIsDrawerOpen(false)}
                 />
-
-                <div className="fixed top-0 left-0 h-full w-64 z-50 bg-gray-900 shadow-xl transform transition-transform duration-300">
+                <div className={clsx(
+                  "fixed inset-y-0 left-0 w-64 bg-gray-900 shadow-2xl z-100 transform transition-transform duration-500 ease-in-out",
+                  isDrawerOpen ? "translate-x-0" : "-translate-x-full"
+                )}>
                   <Sidebar onClose={() => setIsDrawerOpen(false)} />
                 </div>
               </div>
