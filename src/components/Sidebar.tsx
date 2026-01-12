@@ -4,7 +4,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { Home, ListChecks, Target, Store, User, LogOut } from 'lucide-react';
+import { Home, ListChecks, Target, Store, User, LogOut, Menu } from 'lucide-react';
 
 const navItems = [
   { name: 'Home', href: '/dashboard', icon: Home },
@@ -16,53 +16,80 @@ const navItems = [
 
 interface SidebarProps {
   onClose?: () => void;
+  isCollapsed?: boolean;
+  onToggle?: () => void;
 }
 
-export default function Sidebar({ onClose }: SidebarProps) {
+export default function Sidebar({ onClose, isCollapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
   const { logout } = useAuth();
 
   return (
-    <div className="flex flex-col h-full p-4 bg-gray-900 text-white">
-      <div className="flex justify-between items-center mb-6 lg:hidden">
-         <h1 className="text-xl font-bold text-blue-400">RuneTasks</h1>
-         {onClose && (
-            <button onClick={onClose} className="p-2 text-gray-400 hover:text-white">
-                &times;
-            </button>
-         )}
+    <div className="flex flex-col h-full bg-gray-900 text-white py-4">
+      <div className="flex items-center transition-all duration-300 overflow-hidden">
+        <button
+          onClick={onToggle || onClose}
+          className="text-gray-400 hover:text-white transition-colors shrink-0"
+        >
+          <div className="w-20 h-12 flex items-center justify-center shrink-0 cursor-pointer">
+            <Menu className="h-5 w-5" />
+          </div>
+        </button>
+
+        <div className={clsx(
+          "transition-all duration-300 ease-in-out whitespace-nowrap",
+          isCollapsed ? "opacity-0 w-0" : "opacity-100 w-44"
+        )}>
+          <span className="font-bold text-xl whitespace-nowrap animate-in fade-in duration-300">RuneTasks</span>
+        </div>
       </div>
 
-      <nav className="space-y-2 grow">
+      <nav className="flex-1 space-y-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
 
           return (
-            <Link key={item.name} href={item.href} passHref>
+            <Link key={item.name} href={item.href} onClick={onClose} passHref>
               <div
-                onClick={onClose}
                 className={clsx(
-                  "flex items-center p-3 rounded-lg transition-colors duration-200",
-                  isActive
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                  "flex items-center h-12 rounded-full transition-all duration-300 cursor-pointer overflow-hidden",
+                  isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-700"
                 )}
               >
-                <item.icon className="h-5 w-5 mr-3" />
-                <span className="font-medium">{item.name}</span>
+                <div className="w-20 h-12 flex items-center justify-center shrink-0">
+                  <item.icon className="h-5 w-5" />
+                </div>
+
+                <div className={clsx(
+                  "transition-all duration-300 ease-in-out whitespace-nowrap",
+                  isCollapsed ? "opacity-0 w-0" : "opacity-100 w-44"
+                )}>
+                  <span className="font-medium">{item.name}</span>
+                </div>
               </div>
             </Link>
           );
         })}
       </nav>
 
-      <button
-        onClick={logout}
-        className="flex items-center p-3 mt-4 text-red-400 rounded-lg hover:bg-red-900/50 transition-colors"
-      >
-         <LogOut className="h-5 w-5 mr-3" />
-         <span className="font-medium">Sair</span>
-      </button>
+      <div className="mt-auto flex items-center transition-all duration-300 overflow-hidden">
+        <button onClick={logout} className={clsx(
+          "flex items-center w-full h-12 transition-all duration-300 overflow-hidden group",
+          "text-red-700 hover:text-red-900 rounded-full cursor-pointer"
+        )}
+        >
+          <div className="w-20 h-12 flex items-center justify-center shrink-0 ">
+            <LogOut className="h-5 w-5" />
+          </div>
+
+          <div className={clsx(
+            "transition-all duration-300 ease-in-out whitespace-nowrap text-left",
+            isCollapsed ? "opacity-0 w-0" : "opacity-100 w-auto"
+          )}>
+            <span className="font-bold whitespace-nowrap animate-in fade-in duration-300">Sair</span>
+          </div>
+        </button>
+      </div>
     </div>
   );
 }

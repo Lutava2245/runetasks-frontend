@@ -6,15 +6,21 @@ import { AvatarProvider } from "@/src/contexts/AvatarContext";
 import { SkillProvider } from "@/src/contexts/SkillContext";
 import { TaskProvider } from "@/src/contexts/TaskContext";
 import { useRouter } from 'next/navigation';
+import Image from "next/image";
+import logo from "@/src/assets/logo.png";
 import { useEffect, useState } from 'react';
 import { Menu } from 'lucide-react';
+import clsx from "clsx";
+import { useIsLargeScreen } from "@/src/hooks/useMediaQuery";
 
 export default function DashboardLayout({ children }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isLargeScreen = useIsLargeScreen();
   const { user, loading } = useAuth();
   const router = useRouter();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerCollapsed, setIsDrawerCollapsed] = useState(true);
 
   useEffect(() => {
     if (loading) {
@@ -39,19 +45,36 @@ export default function DashboardLayout({ children }: Readonly<{
       <SkillProvider>
         <AvatarProvider>
           <div className="flex min-h-screen bg-gray-50">
+            {isLargeScreen && (
+              <aside
+                style={{ width: isDrawerCollapsed ? '80px' : '256px' }} // CSS Inline é infalível
+                className="bg-gray-900 text-white fixed inset-y-0 left-0 z-50 transition-all duration-300 flex flex-col"
+              >
+                <Sidebar
+                  isCollapsed={isDrawerCollapsed}
+                  onToggle={() => setIsDrawerCollapsed(!isDrawerCollapsed)}
+                />
+              </aside>
+            )}
 
-            <aside className="lg:block w-64 bg-gray-900 shadow-2xl shrink-0">
-              <Sidebar />
-            </aside>
-
-            <div className="grow flex flex-col">
-              <header className="lg:hidden w-full bg-white shadow-md p-4 sticky top-0 z-10">
-                <div className="flex justify-between items-center">
-                  <h1 className="text-xl font-bold text-blue-600">Dashboard</h1>
-                  <button onClick={() => setIsDrawerOpen(true)} className="p-1">
-                    <Menu className="w-6 h-6 text-gray-800" />
-                  </button>
+            <div className={clsx(
+              "flex flex-col flex-1 transition-all duration-300",
+              "lg:ml-20",
+              !isDrawerCollapsed && "lg:ml-64"
+            )}>
+              <header className="lg:hidden flex items-center justify-between p-4 bg-gray-900 shadow-sm">
+                <div className="flex items-center space-x-2 text-xl font-bold hover:text-blue-800 transition duration-150">
+                  <h1 className="text-xl font-bold text-white">RuneTasks</h1>
+                  <Image
+                    src={logo}
+                    alt="Logo RuneTasks"
+                    width={32}
+                    height={32}
+                  />
                 </div>
+                <button onClick={() => setIsDrawerOpen(true)} className="p-1 order-first">
+                  <Menu className="w-6 h-6" />
+                </button>
               </header>
 
               <main className="grow p-4 lg:p-8">
@@ -60,15 +83,16 @@ export default function DashboardLayout({ children }: Readonly<{
             </div>
 
             {isDrawerOpen && (
-              <>
+              <div className="fixed inset-0 z-40 lg:hidden">
                 <div
-                  className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+                  className="fixed inset-0 bg-black/50 transition-opacity"
                   onClick={() => setIsDrawerOpen(false)}
                 />
-                <div className="fixed top-0 left-0 h-full w-64 z-30 transform transition-transform duration-300 ease-in-out lg:hidden">
+
+                <div className="fixed top-0 left-0 h-full w-64 z-50 bg-gray-900 shadow-xl transform transition-transform duration-300">
                   <Sidebar onClose={() => setIsDrawerOpen(false)} />
                 </div>
-              </>
+              </div>
             )}
           </div>
         </AvatarProvider>
