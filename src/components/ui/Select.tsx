@@ -17,7 +17,13 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({ value, onValueChange, options, placeholder = "Selecione", className, ...props }, ref) => {
+  ({
+    value,
+    onValueChange,
+    options,
+    placeholder = "Selecione",
+    ...props
+  }, ref) => {
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       onValueChange(event.target.value);
@@ -29,12 +35,12 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           value={value}
           onChange={handleChange}
-          className={clsx(
-            "w-full appearance-none bg-white border border-gray-300 rounded-lg",
-            "pl-3 pr-10 py-2 text-sm text-gray-800",
-            "focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors",
-            className
-          )}
+          className={`
+            flex-1 p-3 w-full border appearance-none
+            border-foreground
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-(--primary)
+            placeholder-foreground/50 text-sm
+          `}
           {...props}
         >
           <option value="" disabled>

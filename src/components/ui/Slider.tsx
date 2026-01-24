@@ -32,7 +32,7 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
           onChange={onChange}
           className={clsx(
             "w-full h-2 cursor-pointer appearance-none bg-gray-300 rounded-full",
-            "focus:outline-none focus:ring-2 focus:ring-blue-500",
+            "focus:outline-none focus:ring-2 focus:ring-(--primary)",
           )}
           {...props}
         />

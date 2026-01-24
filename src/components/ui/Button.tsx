@@ -1,7 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 
-type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "destructive";
+type ButtonVariant = "primary" | "outline" | "ghost" | "destructive";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -12,34 +12,29 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", children, ...props }, ref) => {
 
     const baseClasses = clsx(
-      "inline-flex items-center justify-center gap-2 whitespace-nowrap",
+      "inline-flex items-center justify-center whitespace-nowrap",
       "rounded-lg text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed",
-      "h-10 px-5 py-2",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+      "h-10 px-2 py-2",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
     );
 
     const variantClasses = {
       primary: clsx(
-        "bg-blue-600 text-white border-2 border-blue-600",
-        "hover:bg-blue-700 shadow-md hover:shadow-lg"
-      ),
-
-      secondary: clsx(
-        "bg-gray-200 text-gray-800 border-2 border-gray-200",
-        "hover:bg-gray-300 shadow-md"
+        "bg-(--primary) text-white border-2 border-(--primary)",
+        "hover:bg-(--dark-primary) hover:border-(--dark-primary) shadow-md hover:shadow-lg"
       ),
 
       destructive: clsx(
-        "bg-red-600 text-white hover:bg-red-700 border-2 border-red-600"
+        "bg-(--error) text-white hover:bg-red-800 border-2 border-(--error) hover:border-red-800"
       ),
 
       outline: clsx(
-        "border-2 border-blue-600 bg-transparent text-blue-600",
-        "hover:bg-blue-50/50"
+        "border-2 border-(--primary) bg-transparent text-(--primary)",
+        "hover:border-(--dark-primary) hover:text-(--dark-primary)"
       ),
 
       ghost: clsx(
-        "bg-transparent text-gray-800 hover:bg-gray-200 border-2 border-transparent"
+        "bg-transparent hover:text-(--primary) border-2 border-transparent"
       ),
     };
 

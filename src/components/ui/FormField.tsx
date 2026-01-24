@@ -30,7 +30,7 @@ const FormField = React.forwardRef<HTMLDivElement, FormProps>(
       <div ref={ref} className={`mb-3 ${baseLayoutClasses}`}>
         <label
           htmlFor={id}
-          className={`text-sm text-gray-400 ${layout === "horizontal" ? "min-w-[120px] text-right" : "font-medium"}`}
+          className={`text-sm ${layout === "horizontal" ? "min-w-[120px] text-right" : "font-medium"}`}
         >
           {label}
         </label>
@@ -45,10 +45,9 @@ const FormField = React.forwardRef<HTMLDivElement, FormProps>(
           required={required}
           className={`
             flex-1 p-3 w-full border
-            border-gray-300
-            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-            text-gray-900
-            placeholder-gray-400
+            border-foreground
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-(--primary)
+            placeholder-foreground/50 text-sm
           `}
           {...props}
         />
