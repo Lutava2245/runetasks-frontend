@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import Button from './ui/Button';
+import { X } from 'lucide-react';
 
 type AuthMode = 'login' | 'register';
 
@@ -20,39 +21,45 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div
-        className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md m-4 transform transition-all duration-300"
+        className="bg-(--card) p-8 rounded-xl shadow-2xl w-full max-w-md m-4 transform transition-all duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold">
             {mode === 'login' ? 'Faça Login' : 'Cadastre-se'}
           </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-900 text-3xl leading-none">
-            &times;
-          </button>
+          <Button
+            variant='ghost'
+            onClick={onClose}
+            className="leading-none"
+          >
+            <X/>
+          </Button>
         </div>
 
         {mode === 'login' ? <LoginForm /> : <RegisterForm />}
 
         <div className="mt-6 text-center text-sm">
           {mode === 'login' ? (
-            <p className="text-gray-600">
-              Não tem uma conta?{' '}
+            <p>
+              Não tem uma conta?
               <Button
-                variant="secondary"
+                variant="outline"
                 onClick={() => setMode('register')}
+                className='ml-3'
               >
                 Cadastre-se
               </Button>
             </p>
           ) : (
-            <p className="text-gray-600">
-              Já tem uma conta?{' '}
+            <p>
+              Já tem uma conta?
               <Button
-                variant="secondary"
+                variant="outline"
                 onClick={() => setMode('login')}
+                className='ml-3'
               >
                 Faça Login
               </Button>
