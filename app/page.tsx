@@ -9,6 +9,7 @@ import logo from "@/src/assets/logo.png";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/contexts/AuthContext";
 import { Cpu, Earth, Target } from "lucide-react";
+import Card from "@/src/components/ui/Card";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,36 +25,33 @@ export default function Home() {
   if (loading || user) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <p>Verificando sessão...</p>
+        <p className="text-xl">Verificando sessão...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="fixed top-0 z-40 w-full shadow-md p-4 bg-background">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-2 text-xl font-bold text-(--primary) hover:text-(--dark-primary) transition duration-150">
-            <Image
-              src={logo}
-              alt="Logo RuneTasks"
-              width={32}
-              height={32}
-            />
-            <h1>RuneTasks</h1>
-          </Link>
+    <div className="min-h-screen">
+      <header className="fixed top-0 w-full shadow-md p-4 bg-background flex justify-between">
+        <Link href="/" className="flex items-center text-xl font-bold text-(--primary) hover:text-(--dark-primary) transition duration-150">
+          <Image
+            src={logo}
+            alt="Logo RuneTasks"
+            width={32}
+            height={32}
+          />
+          <h1>RuneTasks</h1>
+        </Link>
 
-          <Button
-            variant="primary"
-            onClick={() => setIsModalOpen(true)}
-            className="text-base py-1.5 px-4"
-          >
-            Login / Cadastro
-          </Button>
-        </div>
+        <Button
+          onClick={() => setIsModalOpen(true)}
+          className="px-4"
+        >
+          Login / Cadastro
+        </Button>
       </header>
 
-      <main className="grow pt-20">
+      <main className="pt-20">
         <section className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
@@ -61,62 +59,66 @@ export default function Home() {
             </h2>
 
             <div className="flex space-x-4 mb-10">
-              <Button variant="primary" className="text-lg px-8" onClick={() => setIsModalOpen(true)}>
+              <Button
+                onClick={() => setIsModalOpen(true)}
+                className="px-8"
+              >
                 Comece agora
               </Button>
               <Link href="#about" passHref>
-                <Button variant="outline" className="text-lg px-8">
+                <Button
+                  variant="outline"
+                  className="px-8"
+                >
                   Saiba mais
                 </Button>
               </Link>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
-              <div className="p-4 bg-(--card) rounded-xl shadow-lg border-t-4 border-(--primary)/70">
-                <h3 className="text-xl font-bold mb-2 text-(--primary)">Crie tarefas</h3>
-                <p className="text-sm">Organize suas tarefas e ganhe recompensas enquanto progride nas suas habilidades.</p>
-              </div>
-              <div className="p-4 bg-(--card) rounded-xl shadow-lg border-t-4 border-(--primary)/70">
-                <h3 className="text-xl font-bold mb-2 text-(--primary)">Ganhe XP</h3>
-                <p className="text-sm">Ganhe pontos de experiência por cada tarefa completa.</p>
-              </div>
-              <div className="p-4 bg-(--card) rounded-xl shadow-lg border-t-4 border-(--primary)/70">
-                <h3 className="text-xl font-bold mb-2 text-(--primary)">Eleve suas Habilidades</h3>
-                <p className="text-sm">Melhore suas habilidades enquanto avança na sua jornada!</p>
-              </div>
+              <Card className="p-4 rounded-xl shadow-lg border-t-4 border-(--primary)/70 text-(--primary) hover:border-(--secondary)/70 hover:text-(--secondary) transition duration-150">
+                <h3 className="text-xl font-bold mb-2">Crie tarefas</h3>
+                <p className="text-sm text-foreground">Organize suas tarefas e ganhe recompensas enquanto progride nas suas habilidades.</p>
+              </Card>
+              <Card className="p-4 rounded-xl shadow-lg border-t-4 border-(--primary)/70 text-(--primary) hover:border-(--secondary)/70 hover:text-(--secondary) transition duration-150">
+                <h3 className="text-xl font-bold mb-2">Ganhe XP</h3>
+                <p className="text-sm text-foreground">Ganhe pontos de experiência por cada tarefa completa.</p>
+              </Card>
+              <Card className="p-4 rounded-xl shadow-lg border-t-4 border-(--primary)/70 text-(--primary) hover:border-(--secondary)/70 hover:text-(--secondary) transition duration-150">
+                <h3 className="text-xl font-bold mb-2">Eleve suas Habilidades</h3>
+                <p className="text-sm text-foreground">Melhore suas habilidades enquanto avança na sua jornada!</p>
+              </Card>
             </div>
           </div>
         </section>
 
-        <hr className="max-w-7xl mx-auto border-white/50" />
+        <hr className="max-w-7xl mx-auto border-foreground/50" />
 
-        <section id="about" className="max-w-7xl mx-auto px-4 py-16 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="order-2 lg:order-1">
+        <section id="about" className="max-w-7xl mx-auto px-4 py-16 flex flex-col md:flex-row md:justify-between">
+          <div>
             <h1 className="text-4xl font-bold mb-4">Objetivo do RuneTasks</h1>
             <p className="text-lg leading-relaxed">
               O <strong className="text-(--primary)">RuneTasks</strong> é uma aplicação desenvolvida para ajudar os usuários a organizar suas tarefas diárias de maneira eficiente e motivadora.
               Ao completar tarefas, os usuários acumulam pontos que podem ser trocados por recompensas.
-              Nosso objetivo é proporcionar uma experiência agradável e eficiente, promovendo a organização pessoal e a produtividade
+            </p>
+            <p className="text-lg leading-relaxed">
+              O objetivo do projeto é proporcionar uma experiência agradável e eficiente, promovendo a organização pessoal e a produtividade
               através de um sistema de recompensas que motiva o cumprimento de tarefas em troca de momentos de lazer.
             </p>
           </div>
-
-          <div className="order-1 lg:order-2 flex justify-center">
-            <Image
-              src={logo}
-              alt="Logo RuneTasks"
-              width={300}
-              height={300}
-              priority
-            />
-          </div>
+          <Image
+            src={logo}
+            alt="Logo RuneTasks"
+            width={800}
+            height={800}
+            priority
+          />
         </section>
 
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8">
-            <div className="p-6 bg-(--card) rounded-xl shadow-lg">
+        <section className="py-16 max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+            <Card className="p-6 rounded-xl shadow-lg">
               <h2 className="text-2xl font-semibold mb-4 flex items-center text-(--primary) gap-2">
-                <Target/>
+                <Target />
                 Função
               </h2>
               <p className="font-medium mb-3">
@@ -125,10 +127,10 @@ export default function Home() {
               <p className="text-sm">
                 O RuneTasks busca proporcionar uma experiência agradável e eficiente, promovendo a organização pessoal e a produtividade.
               </p>
-            </div>
-            <div className="p-6 bg-(--card) rounded-xl shadow-lg">
+            </Card>
+            <Card className="p-6 rounded-xl shadow-lg">
               <h2 className="text-2xl font-semibold mb-4 flex items-center text-(--primary) gap-2">
-                <Earth/>
+                <Earth />
                 Sobre o Projeto
               </h2>
               <p className="font-medium mb-3">
@@ -137,11 +139,11 @@ export default function Home() {
               <p className="text-sm">
                 O objetivo é aplicar conhecimentos adquiridos em sala de aula em um contexto prático.
               </p>
-            </div>
+            </Card>
 
-            <div className="p-6 bg-(--card) rounded-xl shadow-lg">
+            <Card className="p-6 rounded-xl shadow-lg">
               <h2 className="text-2xl font-semibold mb-4 flex items-center text-(--primary) gap-2">
-                <Cpu/>
+                <Cpu />
                 Tecnologias Utilizadas
               </h2>
               <ul className="space-y-2">
@@ -150,8 +152,7 @@ export default function Home() {
                 <li><strong>Banco de Dados:</strong> MySQL</li>
                 <li><strong>Autenticação:</strong> JSON Web Token (JWT)</li>
               </ul>
-            </div>
-          </div>
+            </Card>
         </section>
 
         <AuthModal
