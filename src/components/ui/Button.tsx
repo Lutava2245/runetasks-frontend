@@ -30,7 +30,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
       outline: clsx(
         "border-2 border-(--primary) bg-transparent text-(--primary)",
-        "hover:border-(--dark-primary) hover:text-(--dark-primary)"
+        "hover:border-foreground/75 hover:text-foreground/75"
       ),
 
       ghost: clsx(

@@ -34,7 +34,7 @@ export default function DashboardLayout({ children }: Readonly<{
 
   if (loading || !user) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className="flex justify-center items-center h-screen">
         <p className="text-xl font-semibold">Carregando Dashboard...</p>
       </div>
     );
@@ -44,11 +44,11 @@ export default function DashboardLayout({ children }: Readonly<{
     <TaskProvider>
       <SkillProvider>
         <AvatarProvider>
-          <div className="flex min-h-screen bg-gray-50">
+          <div className="flex min-h-screen">
             {isLargeScreen && (
               <aside
-                style={{ width: isDrawerCollapsed ? '80px' : '256px' }}
-                className="bg-gray-900 text-white fixed inset-y-0 left-0 z-40 transition-all duration-300 flex flex-col"
+                style={{ width: isDrawerCollapsed ? '80px' : 'auto' }}
+                className="fixed inset-y-0 left-0 z-40 transition-all duration-300 flex flex-col"
               >
                 <Sidebar
                   isCollapsed={isDrawerCollapsed}
@@ -61,18 +61,18 @@ export default function DashboardLayout({ children }: Readonly<{
               style={{ marginLeft: isLargeScreen ? (isDrawerCollapsed ? '80px' : '256px') : '0' }}
             >
               {!isLargeScreen && (
-                <header className="flex items-center justify-between p-4 bg-gray-900 shadow-sm sticky top-0 z-110">
-                  <button onClick={() => setIsDrawerOpen(!isDrawerOpen)} className="p-1 z-120">
+                <header className="flex items-center justify-between p-4 bg-background shadow-sm sticky top-0 z-110">
+                  <button onClick={() => setIsDrawerOpen(!isDrawerOpen)} className="p-1 z-120 ml-1.5">
                     {isDrawerOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                   </button>
                   <div className="flex items-center space-x-2">
-                    <h1 className="text-xl font-bold text-white">RuneTasks</h1>
+                    <h1 className="text-xl font-bold">RuneTasks</h1>
                     <Image src={logo} alt="Logo" width={32} height={32} />
                   </div>
                 </header>
               )}
 
-              <main className="grow p-4 lg:p-8">
+              <main className="grow p-4 md:p-8">
                 {children}
               </main>
             </div>
@@ -90,7 +90,7 @@ export default function DashboardLayout({ children }: Readonly<{
                   onClick={() => setIsDrawerOpen(false)}
                 />
                 <div className={clsx(
-                  "fixed inset-y-0 left-0 w-64 bg-gray-900 shadow-2xl z-100 transform transition-transform duration-500 ease-in-out",
+                  "fixed inset-y-0 left-0 w-64 bg-background shadow-2xl z-100 transform transition-transform duration-500 ease-in-out",
                   isDrawerOpen ? "translate-x-0" : "-translate-x-full"
                 )}>
                   <Sidebar onClose={() => setIsDrawerOpen(false)} />

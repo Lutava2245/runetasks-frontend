@@ -11,6 +11,7 @@ export interface UserResponse {
   progressXP: number
   totalXP: number
   totalCoins: number
+  unlockableItems: number
   createdAt: Date
 };
 

@@ -10,6 +10,9 @@ import { useSkills } from "@/src/contexts/SkillContext";
 import { useTasks } from "@/src/contexts/TaskContext";
 import { selectAvatar } from "@/src/services/userService";
 import { AvatarResponse } from "@/src/types/avatar";
+import { formatDate, isToday } from "@/src/utils/date";
+import clsx from "clsx";
+import { Check, Palette, Square, User } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -47,106 +50,124 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container mx-auto px-6 py-8">
+    <div className="mx-auto px-6 py-8">
       <div className="mb-8">
-        <h2 className="text-2xl md:text-3xl font-bold mb-2">
-          <span className="mystic-glow">Home</span>
-        </h2>
-        <p className="text-muted-foreground text-xs">Continue sua jornada épica de estudos</p>
+        <h2 className="text-2xl md:text-3xl font-bold mb-2">Dashboard</h2>
+        <p className="text-sm">Continue sua jornada épica</p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
           <div className="grid md:grid-cols-3 gap-4">
-            <Card className="p-4 bg-card border-2 border-primary/30 hover:border-primary/50 transition-all pixel-corners">
+            <Card className="p-4 border-2 hover:border-(--primary)/30 transition-all pixel-corners">
               <div className="flex items-center gap-3">
                 <div>
-                  <p className="text-xs text-muted-foreground">Nível</p>
+                  <p className="text-xs">Nível</p>
                   <p className="text-2xl font-bold text-foreground">{user?.level}</p>
                 </div>
               </div>
               <div className="mt-3">
                 <div className="flex justify-between text-xs mb-2">
-                  <span className="text-muted-foreground">XP</span>
+                  XP
                   <span className="text-foreground font-bold">{user?.progressXP} / {user?.xpToNextLevel}</span>
                 </div>
                 <Progress value={user?.levelPercentage ?? 0} className="h-2" />
               </div>
             </Card>
 
-            <Card className="p-4 bg-card border-2 border-secondary/30 hover:border-secondary/50 transition-all pixel-corners">
+            <Card className="p-4 border-2 hover:border-(--secondary)/30 transition-all pixel-corners">
               <div className="flex items-center gap-3">
                 <div>
-                  <p className="text-xs text-muted-foreground">Total XP</p>
+                  <p className="text-xs">Total XP</p>
                   <p className="text-2xl font-bold text-foreground">{user?.totalXP}</p>
                 </div>
               </div>
-              <p className="mt-3 text-xs text-muted-foreground">
-                <span className="text-secondary font-bold">-{(user?.xpToNextLevel && user?.progressXP) ? user?.xpToNextLevel - user?.progressXP : 0} XP</span> próx. nível
+              <p className="mt-3 text-xs">
+                <span className="text-(--secondary) font-bold">-{(user?.xpToNextLevel && user?.progressXP) ? user?.xpToNextLevel - user?.progressXP : 0} XP</span> próx. nível
               </p>
             </Card>
 
-            <Card className="p-4 bg-card border-2 border-primary/30 hover:border-primary/50 transition-all pixel-corners">
+            <Card className="p-4 border-2 hover:border-(--primary)/30 transition-all pixel-corners">
               <div className="flex items-center gap-3">
                 <div>
-                  <p className="text-xs text-muted-foreground">Moedas</p>
+                  <p className="text-xs">Moedas</p>
                   <p className="text-2xl font-bold text-foreground">{user?.totalCoins}</p>
                 </div>
               </div>
-              <Link href="/rewards">
-                <Button variant="secondary" className="w-full mt-3 text-xs">
-                  Ver Recompensas
+              <Link href="/dashboard/store">
+                <Button variant="outline" className="w-full mt-3 text-xs relative">
+                  Loja
+                  {(user?.unlockableItems ?? 0) > 0 && (
+                    <span className="absolute top-1 right-1 flex" id="ping">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-(--secondary) opacity-75"></span>
+                      <span className="relative inline-flex size-3 rounded-full bg-(--secondary)"></span>
+                    </span>
+                  )}
                 </Button>
               </Link>
             </Card>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <Card className="p-4 bg-card border-2 border-border/50 pixel-corners">
+            <Card className="p-4 border-2 hover:border-(--primary)/30 transition-all pixel-corners">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold flex items-center gap-2">
                   Tarefas
                 </h3>
-                <Link href="/tasks">
-                  <Button variant="secondary" className="text-xs h-6">Ver</Button>
+                <Link href="/dashboard/tasks">
+                  <Button variant="outline" className="text-xs h-6">Ver</Button>
                 </Link>
               </div>
               <div className="space-y-2">
                 {tasks.sort((a, b) => {
-                  if (a.status === b.status) return 0;
-                  if (a.status === 'completed') return 1;
-                  return -1;
+                  if (a.status === 'COMPLETED' && b.status !== 'COMPLETED') return 1;
+                  if (a.status !== 'COMPLETED' && b.status === 'COMPLETED') return -1;
+                  if (a.status === b.status) {
+                    return new Date(a.date).getTime() - new Date(b.date).getTime();
+                  }
+                  return 0;
                 }).slice(0, 5).map((task) => {
-                  const taskCompleted = task.status === 'completed';
+                  const taskCompleted = task.status === 'COMPLETED';
 
                   return (
                     <div
                       key={task.id}
-                      className="flex items-center justify-between p-2 bg-background/50 border border-border/30 pixel-corners"
-                    >
+                      className={clsx(
+                        'flex items-center justify-between p-2 border border-(--primary)/30 pixel-corners rounded-lg',
+                        (!taskCompleted && isToday(task.date)) && 'animate-pulse bg-(--primary)/25'
+                      )}>
                       <div className="flex items-center gap-2">
-                        <div className={`w-4 h-4 border-2 flex items-center justify-center pixel-corners ${taskCompleted ? 'bg-primary border-primary' : 'border-border'
-                          }`}>
-                          {taskCompleted && <span className="text-primary-foreground text-[8px]">✓</span>}
+                        <div className={`w-4 h-4 border flex items-center justify-center pixel-corners`}>
+                          {taskCompleted && <strong><Check className="w-4 h-4" /></strong>}
                         </div>
-                        <span className={`text-xs ${taskCompleted ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
+                        <span className={`text-xs ${taskCompleted ? 'line-through' : ''}`}>
                           {task.title.length > 20 ? task.title.substring(0, 20) + '...' : task.title}
                         </span>
+                        {task.status === 'PENDING' && (
+                          <Badge className="text-xs">
+                            {formatDate(task.date)}
+                          </Badge>
+                        )}
                       </div>
-                      <span className="text-xs font-bold text-secondary">+{task.taskXP}</span>
+                      <span className="text-xs font-bold text-(--secondary)">+{task.taskXP}</span>
                     </div>
                   )
                 })}
+                {tasks.length === 0 && (
+                  <div className="flex items-center justify-between p-2 border border-(--primary)/30 pixel-corners rounded-lg bg-background'">
+                    <p className="text-sm">Nenhuma tarefa pendente</p>
+                  </div>
+                )}
               </div>
             </Card>
 
-            <Card className="p-4 bg-card border-2 border-border/50 pixel-corners">
+            <Card className="p-4 border-2 hover:border-(--primary)/30 transition-all pixel-corners">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold flex items-center gap-2">
                   Skills
                 </h3>
-                <Link href="/skills">
-                  <Button variant="secondary" className="text-xs h-6">Ver</Button>
+                <Link href="/dashboard/skills">
+                  <Button variant="outline" className="text-xs h-6">Ver</Button>
                 </Link>
               </div>
               <div className="space-y-2">
@@ -155,7 +176,7 @@ export default function Dashboard() {
                     <div key={index} className="space-y-1">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-foreground">{skill.name}</span>
-                        <span className="text-xs text-muted-foreground">Lv {skill.level}</span>
+                        <span className="text-xs ">Lv {skill.level}</span>
                       </div>
                       <Progress value={skill.levelPercentage} className="h-1" />
                     </div>
@@ -166,33 +187,38 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-4">
-          <Card className="p-4 bg-card border-2 border-primary/30 text-center pixel-corners relative overflow-hidden">
-            <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-secondary/5"></div>
-            <h3 className="text-sm font-bold mb-3 text-foreground relative">👤 Seu Avatar</h3>
-            <div className="relative w-24 h-24 mx-auto mb-3 text-6xl flex items-center justify-center border-4 border-primary/40 pixel-corners bg-primary/10 hover:scale-110 transition-transform">
+          <Card className="p-4 border-2 hover:border-(--primary)/30 transition-all pixel-corners text-center">
+            <h3 className="text-sm font-bold flex justify-center items-center gap-2 mb-3">
+              <User />
+              Avatar
+            </h3>
+            <div className="w-24 h-24 mx-auto mb-3 text-7xl flex items-center justify-center border-2 transition-transform bg-background border-(--primary) rounded-lg">
               {user?.currentAvatarIcon}
             </div>
-            <p className="text-xs text-muted-foreground mb-2 relative">{user?.nickname} - Nível {user?.level}</p>
-            <Badge variant="secondary" className="text-xs relative">
+            <p className="text-xs mb-2">{user?.nickname} - Nível {user?.level}</p>
+            <Badge className="text-xs text-(--secondary) border-(--secondary)">
               {user?.totalCoins} Moedas
             </Badge>
           </Card>
 
-          <Card className="p-4 bg-card border-2 border-border/50 pixel-corners">
-            <h3 className="text-sm font-bold mb-3 text-foreground">🎨 Meus Cosméticos</h3>
-            <div className="grid grid-cols-3 gap-2 max-h-32 overflow-y-auto">
+          <Card className="p-4 border-2 hover:border-(--secondary)/30 transition-all pixel-corners text-center">
+            <h3 className="text-sm font-bold flex justify-center items-center gap-2 mb-3">
+              <Palette />
+              Meus Cosméticos
+            </h3>
+            <div>
               {ownedAvatars.map((avatar) => (
-                <button
+                <Button
                   key={avatar.id}
                   onClick={() => handleEquipCosmetic(avatar)}
-                  className={`p-3 text-3xl border-2 pixel-corners transition-all hover:scale-110 ${user?.currentAvatarName === avatar.iconName
-                    ? 'border-primary bg-primary/20 animate-pulse'
-                    : 'border-border/30 hover:border-primary/50'
-                    }`}
                   title={avatar.title}
+                  className={`border-2 pixel-corners transition-all w-18 h-18 text-xl m-3
+                    bg-background hover:bg-(--dark-primary)/25 hover:scale-120
+                    ${user?.currentAvatarName === avatar.iconName ? 'border-(--secondary) hover:border-(--secondary) hover:bg-(--secondary)/25' : 'border-(--dark-primary) hover:border-(--primary)'
+                    }`}
                 >
                   {avatar.icon}
-                </button>
+                </Button>
               ))}
             </div>
           </Card>
