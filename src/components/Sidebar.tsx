@@ -25,11 +25,11 @@ export default function Sidebar({ onClose, isCollapsed, onToggle }: SidebarProps
   const { logout } = useAuth();
 
   return (
-    <div className="flex flex-col h-full bg-gray-900 text-white py-4">
+    <div className="flex flex-col h-full py-4">
       <div className="flex items-center transition-all duration-300 overflow-hidden">
         <button
           onClick={onToggle || onClose}
-          className="text-gray-400 hover:text-white transition-colors shrink-0"
+          className="hover:text-(--primary) transition-colors shrink-0"
         >
           <div className="w-20 h-12 flex items-center justify-center shrink-0 cursor-pointer">
             <Menu className="h-5 w-5" />
@@ -53,7 +53,7 @@ export default function Sidebar({ onClose, isCollapsed, onToggle }: SidebarProps
               <div
                 className={clsx(
                   "flex items-center h-12 rounded-full transition-all duration-300 cursor-pointer overflow-hidden",
-                  isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-700"
+                  isActive ? "bg-(--primary) text-white" : "hover:bg-(--primary)/25"
                 )}
               >
                 <div className="w-20 h-12 flex items-center justify-center shrink-0">
