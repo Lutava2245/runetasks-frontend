@@ -76,15 +76,15 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
-              <Card className="p-4 rounded-xl shadow-lg border-t-4 border-(--primary)/70 text-(--primary) hover:border-(--secondary)/70 hover:text-(--secondary) transition duration-150">
+              <Card className="rounded-xl shadow-lg border-t-4 border-(--primary)/70 text-(--primary) hover:border-(--secondary)/70 hover:text-(--secondary) transition duration-150">
                 <h3 className="text-xl font-bold mb-2">Crie tarefas</h3>
                 <p className="text-sm text-foreground">Organize suas tarefas e ganhe recompensas enquanto progride nas suas habilidades.</p>
               </Card>
-              <Card className="p-4 rounded-xl shadow-lg border-t-4 border-(--primary)/70 text-(--primary) hover:border-(--secondary)/70 hover:text-(--secondary) transition duration-150">
+              <Card className="rounded-xl shadow-lg border-t-4 border-(--primary)/70 text-(--primary) hover:border-(--secondary)/70 hover:text-(--secondary) transition duration-150">
                 <h3 className="text-xl font-bold mb-2">Ganhe XP</h3>
                 <p className="text-sm text-foreground">Ganhe pontos de experiência por cada tarefa completa.</p>
               </Card>
-              <Card className="p-4 rounded-xl shadow-lg border-t-4 border-(--primary)/70 text-(--primary) hover:border-(--secondary)/70 hover:text-(--secondary) transition duration-150">
+              <Card className="rounded-xl shadow-lg border-t-4 border-(--primary)/70 text-(--primary) hover:border-(--secondary)/70 hover:text-(--secondary) transition duration-150">
                 <h3 className="text-xl font-bold mb-2">Eleve suas Habilidades</h3>
                 <p className="text-sm text-foreground">Melhore suas habilidades enquanto avança na sua jornada!</p>
               </Card>
@@ -116,43 +116,43 @@ export default function Home() {
         </section>
 
         <section className="py-16 max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8">
-            <Card className="p-6 rounded-xl shadow-lg">
-              <h2 className="text-2xl font-semibold mb-4 flex items-center text-(--primary) gap-2">
-                <Target />
-                Função
-              </h2>
-              <p className="font-medium mb-3">
-                Ele é projetado para ajudar os usuários a organizar suas rotinas diárias, incentivando a produtividade e o cumprimento de metas pessoais.
-              </p>
-              <p className="text-sm">
-                O RuneTasks busca proporcionar uma experiência agradável e eficiente, promovendo a organização pessoal e a produtividade.
-              </p>
-            </Card>
-            <Card className="p-6 rounded-xl shadow-lg">
-              <h2 className="text-2xl font-semibold mb-4 flex items-center text-(--primary) gap-2">
-                <Earth />
-                Sobre o Projeto
-              </h2>
-              <p className="font-medium mb-3">
-                Este projeto foi desenvolvido como trabalho de conclusão do curso (TCC) das atividades acadêmicas da Fatec de Praia Grande.
-              </p>
-              <p className="text-sm">
-                O objetivo é aplicar conhecimentos adquiridos em sala de aula em um contexto prático.
-              </p>
-            </Card>
+          <Card className="p-6 rounded-xl shadow-lg">
+            <h2 className="text-2xl font-semibold mb-4 flex items-center text-(--primary) gap-2">
+              <Target />
+              Função
+            </h2>
+            <p className="font-medium mb-3">
+              Ele é projetado para ajudar os usuários a organizar suas rotinas diárias, incentivando a produtividade e o cumprimento de metas pessoais.
+            </p>
+            <p className="text-sm">
+              O RuneTasks busca proporcionar uma experiência agradável e eficiente, promovendo a organização pessoal e a produtividade.
+            </p>
+          </Card>
+          <Card className="p-6 rounded-xl shadow-lg">
+            <h2 className="text-2xl font-semibold mb-4 flex items-center text-(--primary) gap-2">
+              <Earth />
+              Sobre o Projeto
+            </h2>
+            <p className="font-medium mb-3">
+              Este projeto foi desenvolvido como trabalho de conclusão do curso (TCC) das atividades acadêmicas da Fatec de Praia Grande.
+            </p>
+            <p className="text-sm">
+              O objetivo é aplicar conhecimentos adquiridos em sala de aula em um contexto prático.
+            </p>
+          </Card>
 
-            <Card className="p-6 rounded-xl shadow-lg">
-              <h2 className="text-2xl font-semibold mb-4 flex items-center text-(--primary) gap-2">
-                <Cpu />
-                Tecnologias Utilizadas
-              </h2>
-              <ul className="space-y-2">
-                <li><strong>Frontend:</strong> Next.js (com TailwindCSS)</li>
-                <li><strong>Backend:</strong> Spring Boot Framework (Java)</li>
-                <li><strong>Banco de Dados:</strong> MySQL</li>
-                <li><strong>Autenticação:</strong> JSON Web Token (JWT)</li>
-              </ul>
-            </Card>
+          <Card className="p-6 rounded-xl shadow-lg">
+            <h2 className="text-2xl font-semibold mb-4 flex items-center text-(--primary) gap-2">
+              <Cpu />
+              Tecnologias Utilizadas
+            </h2>
+            <ul className="space-y-2">
+              <li><strong>Frontend:</strong> Next.js (com TailwindCSS)</li>
+              <li><strong>Backend:</strong> Spring Boot Framework (Java)</li>
+              <li><strong>Banco de Dados:</strong> MySQL</li>
+              <li><strong>Autenticação:</strong> JSON Web Token (JWT)</li>
+            </ul>
+          </Card>
         </section>
 
         <AuthModal

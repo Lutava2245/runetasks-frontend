@@ -12,7 +12,7 @@ import { selectAvatar } from "@/src/services/userService";
 import { AvatarResponse } from "@/src/types/avatar";
 import { formatDate, isToday } from "@/src/utils/date";
 import clsx from "clsx";
-import { Check, Palette, Square, User } from "lucide-react";
+import { Check, Palette, User } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -41,7 +41,7 @@ export default function Dashboard() {
       try {
         await selectAvatar(avatar.iconName);
         await refreshUser();
-        toast.success("Cosmético equipado!");
+        toast.success('Avatar atualizado!')
       } catch (error) {
         toast.error("Falha ao equipar cosmético.");
         console.error(error);
@@ -59,7 +59,7 @@ export default function Dashboard() {
       <div className="grid md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
           <div className="grid md:grid-cols-3 gap-4">
-            <Card className="p-4 border-2 hover:border-(--primary)/30 transition-all pixel-corners">
+            <Card className="border-2 hover:border-(--primary)/30 transition-all">
               <div className="flex items-center gap-3">
                 <div>
                   <p className="text-xs">Nível</p>
@@ -75,7 +75,7 @@ export default function Dashboard() {
               </div>
             </Card>
 
-            <Card className="p-4 border-2 hover:border-(--secondary)/30 transition-all pixel-corners">
+            <Card className="border-2 hover:border-(--secondary)/30 transition-all">
               <div className="flex items-center gap-3">
                 <div>
                   <p className="text-xs">Total XP</p>
@@ -87,7 +87,7 @@ export default function Dashboard() {
               </p>
             </Card>
 
-            <Card className="p-4 border-2 hover:border-(--primary)/30 transition-all pixel-corners">
+            <Card className="border-2 hover:border-(--primary)/30 transition-all">
               <div className="flex items-center gap-3">
                 <div>
                   <p className="text-xs">Moedas</p>
@@ -95,7 +95,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <Link href="/dashboard/store">
-                <Button variant="outline" className="w-full mt-3 text-xs relative">
+                <Button variant="outline" className="w-full mt-3 relative">
                   Loja
                   {(user?.unlockableItems ?? 0) > 0 && (
                     <span className="absolute top-1 right-1 flex" id="ping">
@@ -109,13 +109,13 @@ export default function Dashboard() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <Card className="p-4 border-2 hover:border-(--primary)/30 transition-all pixel-corners">
+            <Card className="border-2 hover:border-(--primary)/30 transition-all">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold flex items-center gap-2">
                   Tarefas
                 </h3>
                 <Link href="/dashboard/tasks">
-                  <Button variant="outline" className="text-xs h-6">Ver</Button>
+                  <Button variant="outline" className="text-xs">Ver</Button>
                 </Link>
               </div>
               <div className="space-y-2">
@@ -133,11 +133,11 @@ export default function Dashboard() {
                     <div
                       key={task.id}
                       className={clsx(
-                        'flex items-center justify-between p-2 border border-(--primary)/30 pixel-corners rounded-lg',
+                        'flex items-center justify-between p-2 border border-(--primary)/30  rounded-lg',
                         (!taskCompleted && isToday(task.date)) && 'animate-pulse bg-(--primary)/25'
                       )}>
                       <div className="flex items-center gap-2">
-                        <div className={`w-4 h-4 border flex items-center justify-center pixel-corners`}>
+                        <div className={`w-4 h-4 border flex items-center justify-center `}>
                           {taskCompleted && <strong><Check className="w-4 h-4" /></strong>}
                         </div>
                         <span className={`text-xs ${taskCompleted ? 'line-through' : ''}`}>
@@ -154,20 +154,20 @@ export default function Dashboard() {
                   )
                 })}
                 {tasks.length === 0 && (
-                  <div className="flex items-center justify-between p-2 border border-(--primary)/30 pixel-corners rounded-lg bg-background'">
+                  <div className="flex items-center justify-between p-2 border border-(--primary)/30  rounded-lg bg-background'">
                     <p className="text-sm">Nenhuma tarefa pendente</p>
                   </div>
                 )}
               </div>
             </Card>
 
-            <Card className="p-4 border-2 hover:border-(--primary)/30 transition-all pixel-corners">
+            <Card className="border-2 hover:border-(--primary)/30 transition-all">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold flex items-center gap-2">
                   Skills
                 </h3>
                 <Link href="/dashboard/skills">
-                  <Button variant="outline" className="text-xs h-6">Ver</Button>
+                  <Button variant="outline" className="text-xs">Ver</Button>
                 </Link>
               </div>
               <div className="space-y-2">
@@ -187,7 +187,7 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-4">
-          <Card className="p-4 border-2 hover:border-(--primary)/30 transition-all pixel-corners text-center">
+          <Card className="border-2 hover:border-(--primary)/30 transition-all text-center">
             <h3 className="text-sm font-bold flex justify-center items-center gap-2 mb-3">
               <User />
               Avatar
@@ -201,7 +201,7 @@ export default function Dashboard() {
             </Badge>
           </Card>
 
-          <Card className="p-4 border-2 hover:border-(--secondary)/30 transition-all pixel-corners text-center">
+          <Card className="border-2 hover:border-(--secondary)/30 transition-all text-center">
             <h3 className="text-sm font-bold flex justify-center items-center gap-2 mb-3">
               <Palette />
               Meus Cosméticos
@@ -212,9 +212,11 @@ export default function Dashboard() {
                   key={avatar.id}
                   onClick={() => handleEquipCosmetic(avatar)}
                   title={avatar.title}
-                  className={`border-2 pixel-corners transition-all w-18 h-18 text-xl m-3
+                  className={`border-2  w-18 h-18 text-xl m-3
                     bg-background hover:bg-(--dark-primary)/25 hover:scale-120
-                    ${user?.currentAvatarName === avatar.iconName ? 'border-(--secondary) hover:border-(--secondary) hover:bg-(--secondary)/25' : 'border-(--dark-primary) hover:border-(--primary)'
+                    ${user?.currentAvatarName === avatar.iconName
+                      ? 'border-(--secondary) hover:border-(--secondary) hover:bg-(--secondary)/25'
+                      : 'border-(--dark-primary) hover:border-(--primary)'
                     }`}
                 >
                   {avatar.icon}

@@ -12,15 +12,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", children, ...props }, ref) => {
 
     const baseClasses = clsx(
-      "inline-flex items-center justify-center whitespace-nowrap",
-      "rounded-lg text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed",
-      "h-10 px-2 py-2",
+      "rounded-lg text-sm font-bold h-10 px-2 py-2 transition-all",
+      "disabled:opacity-50 disabled:cursor-not-allowed",
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
     );
 
     const variantClasses = {
       primary: clsx(
-        "bg-(--primary) text-white border-2 border-(--primary)",
+        "bg-(--primary) text-white border-(--primary)",
         "hover:bg-(--dark-primary) hover:border-(--dark-primary) shadow-md hover:shadow-lg"
       ),
 
@@ -34,7 +33,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ),
 
       ghost: clsx(
-        "bg-transparent hover:text-(--primary) border-2 border-transparent"
+        "bg-transparent hover:text-(--primary)"
       ),
     };
 

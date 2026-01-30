@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Home, ListChecks, Target, Store, User, LogOut, Menu } from 'lucide-react';
+import Button from './ui/Button';
 
 const navItems = [
   { name: 'Home', href: '/dashboard', icon: Home },
@@ -27,14 +28,13 @@ export default function Sidebar({ onClose, isCollapsed, onToggle }: SidebarProps
   return (
     <div className="flex flex-col h-full py-4">
       <div className="flex items-center transition-all duration-300 overflow-hidden">
-        <button
+        <Button
+          variant='ghost'
           onClick={onToggle || onClose}
-          className="hover:text-(--primary) transition-colors shrink-0"
+          className="leading-none shrink-0 w-20 h-12 flex items-center justify-center cursor-pointer"
         >
-          <div className="w-20 h-12 flex items-center justify-center shrink-0 cursor-pointer">
-            <Menu className="h-5 w-5" />
-          </div>
-        </button>
+          <Menu className="h-5 w-5" />
+        </Button>
 
         <div className={clsx(
           "transition-all duration-300 ease-in-out whitespace-nowrap",

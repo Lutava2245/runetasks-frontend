@@ -5,6 +5,7 @@ import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import Button from './ui/Button';
 import { X } from 'lucide-react';
+import Card from './ui/Card';
 
 type AuthMode = 'login' | 'register';
 
@@ -22,8 +23,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
-      <div
-        className="bg-(--card) p-8 rounded-xl shadow-2xl w-full max-w-md m-4 transform transition-all duration-300"
+      <Card
+        className="p-8 rounded-xl w-full max-w-md m-4 transform transition-all duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6">
@@ -66,7 +67,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             </p>
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
