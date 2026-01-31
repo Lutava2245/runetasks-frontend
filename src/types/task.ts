@@ -7,6 +7,8 @@ export interface TaskResponse {
   taskXP: number
   taskCoins: number
   skillName: string
+  date: Date
+  repeatType: string
 }
 
 export interface TaskCreateRequest {
@@ -14,9 +16,13 @@ export interface TaskCreateRequest {
   description: string
   difficulty: string
   skillName: string
+  date: Date
+  repeatType: string
 }
 
 export interface TaskEditRequest {
   title: string
   description: string
+  date: Date
+  repeatType: string
 }
