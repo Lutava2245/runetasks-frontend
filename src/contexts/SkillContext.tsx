@@ -14,10 +14,12 @@ const SkillContext = createContext<SkillContextType | null>(null);
 
 export const SkillProvider = ({ children }: { children: React.ReactNode }) => {
   const [skills, setSkills] = useState<SkillResponse[]>([]);
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    refreshSkills();
+    if (!authLoading && user) {
+      refreshSkills();
+    }
   }, []);
 
   const refreshSkills = async () => {
@@ -26,7 +28,9 @@ export const SkillProvider = ({ children }: { children: React.ReactNode }) => {
         const response = await getAllSkillsByUser(user.id);
         setSkills(response.data);
       } catch (error: any) {
-        console.error(error?.response?.data);
+        if (error.response?.status !== 401) {
+          console.error("Erro ao carregar habilidades", error);
+        }
       }
     }
   };

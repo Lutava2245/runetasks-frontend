@@ -12,12 +12,14 @@ interface RewardContextType {
 
 const RewardContext = createContext<RewardContextType | null>(null);
 
-export const RewardProvider = ({ children }: { children: React.ReactNode}) => {
+export const RewardProvider = ({ children }: { children: React.ReactNode }) => {
   const [rewards, setRewards] = useState<RewardResponse[]>([]);
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    refreshRewards();
+    if (!authLoading && user) {
+      refreshRewards();
+    }
   }, [])
 
   const refreshRewards = async () => {
@@ -26,7 +28,9 @@ export const RewardProvider = ({ children }: { children: React.ReactNode}) => {
         const response = await getAllRewardsByUser(user.id);
         setRewards(response.data);
       } catch (error: any) {
-        console.error(error?.response?.data);
+        if (error.response?.status !== 401) {
+          console.error("Erro ao carregar recompensas", error);
+        }
       }
     }
   };

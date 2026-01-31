@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { getAllAvatars } from "../services/storeService";
 import type { AvatarResponse } from "../types/avatar";
+import { useAuth } from "./AuthContext";
 
 interface AvatarContextType {
   avatars: AvatarResponse[];
@@ -13,17 +14,22 @@ const AvatarContext = createContext<AvatarContextType | null>(null);
 
 export const AvatarProvider = ({ children }: { children: React.ReactNode }) => {
   const [avatars, setAvatars] = useState<AvatarResponse[]>([]);
+  const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    refreshAvatars();
+    if (!authLoading && user) {
+      refreshAvatars();
+    }
   }, []);
 
   const refreshAvatars = async () => {
     try {
       const response = await getAllAvatars();
       setAvatars(response.data);
-    } catch (error) {
-      console.error("Erro ao carregar avatares", error);
+    } catch (error: any) {
+      if (error.response?.status !== 401) {
+        console.error("Erro ao carregar avatares", error);
+      }
     }
   };
 
