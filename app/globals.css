@@ -12,6 +12,7 @@
   --card: #fff;
 
   --error: #dc143c;
+  --warning: #cb8408;
 }
 
 @theme inline {
