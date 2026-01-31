@@ -5,27 +5,43 @@ import FormField from "./ui/FormField";
 import { useTasks } from "../contexts/TaskContext";
 import { TaskEditRequest, TaskResponse } from "../types/task";
 import { editTask } from "../services/taskService";
+import { getDateString } from "../utils/date";
+import Select from "./ui/Select";
+import { DatePicker } from "./ui/DatePicker";
 
 interface TaskEditFormProps {
   onClose: () => void;
-  task: TaskResponse | null;
+  task: TaskResponse;
 }
 
 export default function TaskEditForm({ onClose, task }: TaskEditFormProps) {
   const { refreshTasks } = useTasks();
-  const [title, setTitle] = useState(task?.title || "");
-  const [description, setDescription] = useState(task?.description || "");
+  const [title, setTitle] = useState(task.title);
+  const [description, setDescription] = useState(task.description);
+  const [date, setDate] = useState<string>(getDateString(task.date));
+  const [repeatType, setRepeatType] = useState(task.repeatType);
+
+  const repeatTypeOptions = [
+    { id: 1, name: "Nenhuma", value: "NONE" },
+    { id: 2, name: "Diária", value: "DAILY" },
+    { id: 3, name: "Semanal", value: "WEEKLY" },
+    { id: 4, name: "Mensal", value: "MONTHLY" },
+  ];
 
   const handleEditTask = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title) {
-      toast.error("Precisa modificar o título.");
+    if (!title && !description && !date && !repeatType) {
+      toast.error("Precisa modificar algo para salvar.");
       return;
     }
 
+    const [year, month, day] = date.split('-').map(Number);
+
     const newTask: TaskEditRequest = {
       title,
-      description
+      description,
+      date: new Date(year, month - 1, day),
+      repeatType
     }
 
     if (task) {
@@ -51,7 +67,6 @@ export default function TaskEditForm({ onClose, task }: TaskEditFormProps) {
         label="Título"
         value={title}
         placeholder="Digite o título"
-        defaultValue={task?.title}
         onChange={e => setTitle(e.target.value)}
         required
       />
@@ -61,11 +76,25 @@ export default function TaskEditForm({ onClose, task }: TaskEditFormProps) {
         label="Descrição"
         value={description}
         placeholder="Digite a descrição"
-        defaultValue={task?.description}
         onChange={e => setDescription(e.target.value)}
       />
 
-      <Button type="submit" className="w-full text-xs">
+      <Select
+        label="Repetição"
+        value={repeatType}
+        onValueChange={setRepeatType}
+        options={repeatTypeOptions}
+      />
+
+      <DatePicker
+        label="Data"
+        value={date}
+        placeholder={date}
+        onValueChange={(value) => setDate(value)}
+        min={new Date().toISOString().split('T')[0]}
+      />
+
+      <Button type="submit" className="w-full text-xs mt-1">
         Editar Tarefa
       </Button>
     </form>

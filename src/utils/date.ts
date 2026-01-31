@@ -19,3 +19,12 @@ export const isToday = (date: Date): boolean => {
 
   return inputDate.toDateString() === today.toDateString();
 }
+
+export const getDateString = (date: Date | string) => {
+  const dateObj = typeof date === 'string' ? new Date(date + "T00:00:00") : date;
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+};

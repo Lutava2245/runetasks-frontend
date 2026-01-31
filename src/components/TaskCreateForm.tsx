@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import Badge from "./ui/Badge";
 import Button from "./ui/Button";
 import FormField from "./ui/FormField";
 import Select from "./ui/Select";
@@ -9,6 +8,8 @@ import { TaskCreateRequest } from "../types/task";
 import { registerTask } from "../services/taskService";
 import { useTasks } from "../contexts/TaskContext";
 import { useSkills } from "../contexts/SkillContext";
+import { DatePicker } from "./ui/DatePicker";
+import { getDateString } from "../utils/date";
 
 interface TaskCreateFormProps {
   onClose: () => void;
@@ -21,12 +22,21 @@ export default function TaskCreateForm({ onClose }: TaskCreateFormProps) {
   const [description, setDescription] = useState("");
   const [skillName, setSkillName] = useState("");
   const [difficulty, setDifficulty] = useState(1);
+  const [date, setDate] = useState(getDateString(new Date()));
+  const [repeatType, setRepeatType] = useState("NONE");
 
   const skillOptions = skills.map(skill => ({
     id: skill.id,
     name: skill.name,
     value: skill.name
   }));
+
+  const repeatTypeOptions = [
+    { id: 1, name: "Nenhuma", value: "NONE" },
+    { id: 2, name: "Diária", value: "DAILY" },
+    { id: 3, name: "Semanal", value: "WEEKLY" },
+    { id: 4, name: "Mensal", value: "MONTHLY" },
+  ];
 
   const switchDifficulty = (difficulty: number): string => {
     switch (difficulty) {
@@ -43,16 +53,20 @@ export default function TaskCreateForm({ onClose }: TaskCreateFormProps) {
 
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !difficulty || !skillName ) {
+    if (!title || !difficulty || !skillName || !date || !repeatType) {
       toast.error("Preencha todos os campos.");
       return;
     }
+
+    const [year, month, day] = date.split('-').map(Number);
 
     const newTask: TaskCreateRequest = {
       title,
       description,
       difficulty: switchDifficulty(difficulty),
-      skillName
+      skillName,
+      date: new Date(year, month - 1, day),
+      repeatType
     }
 
     try {
@@ -88,37 +102,42 @@ export default function TaskCreateForm({ onClose }: TaskCreateFormProps) {
         onChange={e => setDescription(e.target.value)}
       />
 
-      <div>
-        <label className="text-sm font-bold text-gray-700 mb-1 block">Habilidade</label>
-        <Select
-          value={skillName}
-          onValueChange={setSkillName}
-          options={skillOptions}
-          placeholder="Selecione"
-          className="bg-gray-50 border-gray-400 text-xs"
-        />
-        </div>
+      <Select
+        label="Habilidade"
+        value={skillName}
+        onValueChange={setSkillName}
+        options={skillOptions}
+      />
 
-      <div className="mt-4">
-        <label className="text-sm font-bold text-gray-700 mb-2 block">
-          Dificuldade
-        </label>
-        <div className="flex items-center gap-4 bg-gray-100 p-3 rounded-lg border">
-          <Slider
-            value={difficulty}
-            onChange={(e) => setDifficulty(Number(e.target.value))}
-            max={3}
-            min={1}
-            step={1}
-            className="flex-1"
-          />
-          <Badge className="w-10 justify-center">
-            {difficulty}
-          </Badge>
-        </div>
-      </div>
-      <p className="text-xs text-muted-foreground mt-2">
-        Dificuldade: <span className="text-primary font-bold">{switchDifficulty(difficulty)}</span>
+      <Select
+        label="Repetição"
+        value={repeatType}
+        onValueChange={setRepeatType}
+        options={repeatTypeOptions}
+      />
+
+      <DatePicker
+        label="Data"
+        value={date}
+        placeholder={date}
+        onValueChange={(value) => setDate(value)}
+        min={new Date().toISOString().split('T')[0]}
+      />
+
+      <Slider
+        label="Dificuldade"
+        value={difficulty}
+        onChange={(e) => setDifficulty(Number(e.target.value))}
+        max={3}
+        min={1}
+        step={1}
+      />
+      <p className="text-xs">
+        Dificuldade: <span className="text-(--primary) font-bold">
+          {difficulty === 1 && "Fácil"}
+          {difficulty === 2 && "Médio"}
+          {difficulty === 3 && "Difícil"}
+        </span>
       </p>
 
       <Button type="submit" className="w-full text-xs">
