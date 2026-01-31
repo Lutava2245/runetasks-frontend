@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import clsx from 'clsx';
 
 interface Option {
   id: string | number;
@@ -11,6 +10,7 @@ interface Option {
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   onValueChange: (value: string) => void;
+  label: string;
   options: Option[];
   placeholder?: string;
   [key: string]: any;
@@ -18,6 +18,8 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({
+    label,
+    id,
     value,
     onValueChange,
     options,
@@ -31,7 +33,15 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 
     return (
       <div className="relative">
+        <label
+          htmlFor={id}
+          className="text-sm font-bold mb-1 block"
+        >
+          {label}
+        </label>
+
         <select
+          id={id}
           ref={ref}
           value={value}
           onChange={handleChange}
