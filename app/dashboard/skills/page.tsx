@@ -9,7 +9,8 @@ import { useSkills } from "@/src/contexts/SkillContext";
 import { useTasks } from "@/src/contexts/TaskContext";
 import { SkillResponse } from "@/src/types/skill";
 import { TaskResponse } from "@/src/types/task";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Briefcase, Dumbbell, GraduationCap, Heart, Home, Landmark, Lightbulb, Plane, ShoppingBag, Users } from "lucide-react";
 
 const Skills = () => {
   const { skills } = useSkills();
@@ -19,6 +20,47 @@ const Skills = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formType, setFormType] = useState("");
   const [targetSkill, setTargetSkill] = useState<SkillResponse | null>(null);
+
+  useEffect(() => {
+    setCompletedTasks(tasks.filter(t => t.status === "COMPLETED"));
+  }, [tasks])
+
+  const getSkillIcon = (skill: SkillResponse) => {
+    switch (skill.icon) {
+      case 'personal':
+        return <Users className="h-20 w-20" />;
+
+      case 'work':
+        return <Briefcase className="h-20 w-20" />;
+
+      case 'study':
+        return <GraduationCap className="h-20 w-20" />
+
+      case 'home':
+        return <Home className="h-20 w-20" />
+
+      case 'health':
+        return <Heart className="h-20 w-20" />
+
+      case 'exercise':
+        return <Dumbbell className="h-20 w-20" />
+
+      case 'money':
+        return <Landmark className="h-20 w-20" />
+
+      case 'shopping':
+        return <ShoppingBag className="h-20 w-20" />
+
+      case 'travel':
+        return <Plane className="h-20 w-20" />
+
+      case 'idea':
+        return <Lightbulb className="h-20 w-20" />
+
+      default:
+        break;
+    }
+  }
 
   const toggleCreate = () => {
     setFormType("create");
@@ -33,90 +75,89 @@ const Skills = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div className="mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">
-              <span className="mystic-glow">Habilidades</span>
-            </h2>
-            <p className="text-muted-foreground text-xs">Evolua em cada área</p>
-          </div>
-          <Button
-            onClick={toggleCreate}
-            className="text-base py-1.5 px-4"
-          >
-            Criar
-          </Button>
+    <div className="mx-auto px-6 py-8">
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold mb-2">Habilidades</h2>
+          <p className="text-sm">Evolua em cada área</p>
         </div>
+        <Button
+          onClick={toggleCreate}
+          className="py-1.5 px-4"
+        >
+          Criar
+        </Button>
+      </div>
 
-        <div className="grid md:grid-cols-3 gap-4 mb-6">
-          <Card className="p-4 bg-card border-2 border-primary/30 pixel-corners">
+      <div className="grid md:col-span-2 space-y-6">
+        <div className="grid md:grid-cols-2 gap-4">
+          <Card className="border-2 hover:border-(--primary)/30 transition-all">
             <div className="flex items-center gap-3">
               <div>
-                <p className="text-xs text-muted-foreground">Ativas</p>
+                <p className="text-xs ">Total de Habilidades</p>
                 <p className="text-2xl font-bold text-foreground">{skills.length}</p>
               </div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-card border-2 border-secondary/30 pixel-corners">
+          <Card className="border-2 hover:border-(--secondary)/30 transition-all">
             <div className="flex items-center gap-3">
               <div>
-                <p className="text-xs text-muted-foreground">Tarefas</p>
+                <p className="text-xs ">Tarefas Concluídas</p>
                 <p className="text-2xl font-bold text-foreground">
-                  {tasks.length - completedTasks.length}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4 bg-card border-2 border-primary/30 pixel-corners">
-            <div className="flex items-center gap-3">
-              <div>
-                <p className="text-xs text-muted-foreground">Pontos</p>
-                <p className="text-2xl font-bold text-foreground">
-                  {skills.reduce((acc, skill) => acc + skill.totalXP, 0)}
+                  {completedTasks.length + "/" + tasks.length}
                 </p>
               </div>
             </div>
           </Card>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4 mb-4">
+        <div className="grid md:grid-cols-3 gap-4 mb-4">
           {skills.map((skill) => (
-            <button key={skill.id} onClick={() => toggleEdit(skill.id)}>
-              <Card className="p-4 bg-card border-2 border-border/50 hover:border-blue-600 transition-all pixel-corners">
+            <Card
+              key={skill.id}
+              onClick={() => toggleEdit(skill.id)}
+              className="border-2 border-(--primary) hover:border-foreground hover:scale-105 transition-all flex justify-center items-center"
+            >
+              <div className="flex items-center justify-center border transition-transform bg-background border-(--primary) rounded-xl p-2 mr-3">
+                {getSkillIcon(skill)}
+              </div>
+
+              <div className="w-full">
                 <div className="flex items-start gap-3 mb-3">
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
                       <h3 className="text-sm font-bold text-foreground">{skill.name}</h3>
-                      <Badge variant="secondary" className="flex items-center gap-1 text-xs">
+                      <Badge className="flex items-center gap-1 text-xs">
                         Lv {skill.level}
                       </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground mb-2">
-                      {completedTasks.filter(t => t.skillName === skill.name).length === 1
-                        ? completedTasks.filter(t => t.skillName === skill.name).length + ' tarefa completa'
-                        : completedTasks.filter(t => t.skillName === skill.name).length + ' tarefas completas'}
+                    <p className="text-xs  mb-2">
+                      {skill.totalTasks === 0
+                        ? 'Nenhuma tarefa'
+                        : (
+                          skill.totalTasks === 1
+                            ? skill.totalTasks + ' tarefa'
+                            : skill.totalTasks + ' tarefas'
+                        )}
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Progresso</span>
+                    <span className="">Progresso do Nível</span>
                     <span className="text-foreground font-bold">
                       {skill.levelPercentage}%
                     </span>
                   </div>
                   <Progress value={skill.levelPercentage} className="h-2" />
-                  <p className="text-xs text-muted-foreground">
-                    <span className="text-primary font-bold">-{skill.xpToNextLevel - skill.progressXP}</span> {'->'} Lv {skill.level + 1}
+                  <p className="text-xs ">
+                    <span className="text-(--secondary) font-bold">-{skill.xpToNextLevel - skill.progressXP}</span> {'->'} Lv {skill.level + 1}
                   </p>
                 </div>
-              </Card>
-            </button>
+              </div>
+            </Card>
           ))}
         </div>
       </div>
