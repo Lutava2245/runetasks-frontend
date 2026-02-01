@@ -63,7 +63,6 @@ export default function RegisterForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <FormField
         id="name"
-        layout='horizontal'
         label="Nome"
         value={name}
         placeholder="Digite seu nome"
@@ -73,7 +72,6 @@ export default function RegisterForm() {
 
       <FormField
         id="nickname"
-        layout='horizontal'
         label="Nickname"
         value={nickname}
         placeholder="Digite seu nickname"
@@ -83,7 +81,6 @@ export default function RegisterForm() {
 
       <FormField
         id="email"
-        layout='horizontal'
         label="E-mail"
         type="email"
         value={email}
@@ -94,7 +91,6 @@ export default function RegisterForm() {
 
       <FormField
         id="password"
-        layout='horizontal'
         label="Senha"
         type="password"
         value={password}
@@ -105,7 +101,6 @@ export default function RegisterForm() {
 
       <FormField
         id="confirmPassword"
-        layout='horizontal'
         label="Confirmar senha"
         type="password"
         value={confirmPassword}

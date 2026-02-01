@@ -1,16 +1,12 @@
 import React from 'react';
 
-type FieldLayout = "horizontal" | "vertical";
-
 interface FormProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  layout?: FieldLayout;
   label: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const FormField = React.forwardRef<HTMLDivElement, FormProps>(
   ({
-    layout = "vertical",
     label,
     id,
     type = "text",
@@ -22,15 +18,12 @@ const FormField = React.forwardRef<HTMLDivElement, FormProps>(
     ...props
   }, ref) => {
 
-    const baseLayoutClasses = layout === "horizontal"
-      ? "flex items-center justify-between gap-2.5"
-      : "flex flex-col gap-1.5";
 
     return (
-      <div ref={ref} className={`mb-3 ${baseLayoutClasses}`}>
+      <div ref={ref} className={`mb-3 flex flex-col gap-1.5`}>
         <label
           htmlFor={id}
-          className={`text-sm ${layout === "horizontal" ? "min-w-[120px] text-right" : "font-medium"}`}
+          className={`text-sm font-medium`}
         >
           {label}
         </label>
