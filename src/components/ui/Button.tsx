@@ -13,8 +13,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const baseClasses = clsx(
       "rounded-lg text-sm font-bold h-10 px-2 py-2 transition-all",
-      "disabled:opacity-50 disabled:cursor-not-allowed",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
+      "disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) focus-visible:ring-offset-2"
     );
 
     const variantClasses = {

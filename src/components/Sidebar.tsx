@@ -52,7 +52,7 @@ export default function Sidebar({ onClose, isCollapsed, onToggle }: SidebarProps
             <Link key={item.name} href={item.href} onClick={onClose} passHref>
               <div
                 className={clsx(
-                  "flex items-center h-12 rounded-full transition-all duration-300 cursor-pointer overflow-hidden",
+                  "flex items-center h-12 rounded-full transition-all duration-300 overflow-hidden",
                   isActive ? "bg-(--primary) text-white" : "hover:bg-(--primary)/25"
                 )}
               >

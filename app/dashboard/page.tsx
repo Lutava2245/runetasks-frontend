@@ -71,7 +71,7 @@ export default function Dashboard() {
                   XP
                   <span className="text-foreground font-bold">{user?.progressXP} / {user?.xpToNextLevel}</span>
                 </div>
-                <Progress value={user?.levelPercentage ?? 0} className="h-2" />
+                <Progress value={user?.levelPercentage ?? 0} />
               </div>
             </Card>
 
@@ -212,7 +212,7 @@ export default function Dashboard() {
                   key={avatar.id}
                   onClick={() => handleEquipCosmetic(avatar)}
                   title={avatar.title}
-                  className={`border-2  w-18 h-18 text-xl m-3
+                  className={`border-2 w-18 h-18 text-xl m-3
                     bg-background hover:bg-(--dark-primary)/25 hover:scale-120
                     ${user?.currentAvatarName === avatar.iconName
                       ? 'border-(--secondary) hover:border-(--secondary) hover:bg-(--secondary)/25'

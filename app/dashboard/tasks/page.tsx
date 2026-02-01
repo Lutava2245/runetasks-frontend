@@ -68,7 +68,7 @@ const Tasks = () => {
 
   return (
     <div className="mx-auto px-6 py-8">
-      <div className="mb-8 flex items-center justify-between ">
+      <div className="mb-8 flex items-center justify-between">
         <div>
           <h2 className="text-2xl md:text-3xl font-bold mb-2">Tarefas</h2>
           <p className="text-sm">Organize suas tarefas e ganhe XP</p>
