@@ -38,7 +38,7 @@ export default function TaskModal({ isOpen, onClose, formType, task }: TaskModal
         {
           formType === 'create'
             ? <TaskCreateForm onClose={onClose} />
-            : <TaskEditForm onClose={onClose} task={task} />
+            : task && <TaskEditForm onClose={onClose} task={task} />
         }
       </div>
     </div>
