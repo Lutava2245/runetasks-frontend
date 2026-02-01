@@ -10,5 +10,9 @@ export const registerSkill = (request: SkillRequest) => {
 }
 
 export const editSkill = (request: SkillRequest, skillId: number) => {
-  return api.put('/skills/' + skillId);
+  return api.put('/skills/' + skillId, request);
+}
+
+export const deleteSkill = (skillId: number) => {
+  return api.delete('/skills/' + skillId)
 }
