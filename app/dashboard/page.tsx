@@ -180,7 +180,13 @@ export default function Dashboard() {
                       </div>
                       <Progress value={skill.levelPercentage} className="h-1" />
                     </div>
-                  ))}
+                  ))
+                }
+                {skills.length === 0 && (
+                  <div className="flex items-center justify-between p-2 border border-(--primary)/30  rounded-lg bg-background'">
+                    <p className="text-sm">Nenhuma habilidade criada</p>
+                  </div>
+                )}
               </div>
             </Card>
           </div>

@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { Briefcase, Dumbbell, GraduationCap, Heart, Home, Landmark, Lightbulb, Plane, ShoppingBag, Users } from "lucide-react";
 
 const Skills = () => {
-  const { skills } = useSkills();
+  const { skills, refreshSkills } = useSkills();
   const { tasks } = useTasks();
 
   const [completedTasks, setCompletedTasks] = useState<TaskResponse[]>(() => tasks.filter(t => t.status === "completed"));
@@ -23,7 +23,9 @@ const Skills = () => {
 
   useEffect(() => {
     setCompletedTasks(tasks.filter(t => t.status === "COMPLETED"));
+    refreshSkills();
   }, [tasks])
+
 
   const getSkillIcon = (skill: SkillResponse) => {
     switch (skill.icon) {
@@ -112,54 +114,61 @@ const Skills = () => {
           </Card>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4 mb-4">
-          {skills.map((skill) => (
-            <Card
-              key={skill.id}
-              onClick={() => toggleEdit(skill.id)}
-              className="border-2 border-(--primary) hover:border-foreground hover:scale-105 transition-all flex justify-center items-center"
-            >
-              <div className="flex items-center justify-center border transition-transform bg-background border-(--primary) rounded-xl p-2 mr-3">
-                {getSkillIcon(skill)}
-              </div>
+        {skills.length > 0 && (
+          <div className="grid md:grid-cols-3 gap-4 mb-4">
+            {skills.map((skill) => (
+              <Card
+                key={skill.id}
+                onClick={() => toggleEdit(skill.id)}
+                className="border-2 border-(--primary) hover:border-foreground hover:scale-105 transition-all flex justify-center items-center"
+              >
+                <div className="flex items-center justify-center border transition-transform bg-background border-(--primary) rounded-xl p-2 mr-3">
+                  {getSkillIcon(skill)}
+                </div>
 
-              <div className="w-full">
-                <div className="flex items-start gap-3 mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <h3 className="text-sm font-bold text-foreground">{skill.name}</h3>
-                      <Badge className="flex items-center gap-1 text-xs">
-                        Lv {skill.level}
-                      </Badge>
+                <div className="w-full">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="text-sm font-bold text-foreground">{skill.name}</h3>
+                        <Badge className="flex items-center gap-1 text-xs">
+                          Lv {skill.level}
+                        </Badge>
+                      </div>
+                      <p className="text-xs  mb-2">
+                        {skill.totalTasks === 0
+                          ? 'Nenhuma tarefa'
+                          : (
+                            skill.totalTasks === 1
+                              ? skill.totalTasks + ' tarefa'
+                              : skill.totalTasks + ' tarefas'
+                          )}
+                      </p>
                     </div>
-                    <p className="text-xs  mb-2">
-                      {skill.totalTasks === 0
-                        ? 'Nenhuma tarefa'
-                        : (
-                          skill.totalTasks === 1
-                            ? skill.totalTasks + ' tarefa'
-                            : skill.totalTasks + ' tarefas'
-                        )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="">Progresso do Nível</span>
+                      <span className="text-foreground font-bold">
+                        {skill.levelPercentage}%
+                      </span>
+                    </div>
+                    <Progress value={skill.levelPercentage} className="h-2" />
+                    <p className="text-xs ">
+                      <span className="text-(--secondary) font-bold">-{skill.xpToNextLevel - skill.progressXP}</span> {'->'} Lv {skill.level + 1}
                     </p>
                   </div>
                 </div>
-
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="">Progresso do Nível</span>
-                    <span className="text-foreground font-bold">
-                      {skill.levelPercentage}%
-                    </span>
-                  </div>
-                  <Progress value={skill.levelPercentage} className="h-2" />
-                  <p className="text-xs ">
-                    <span className="text-(--secondary) font-bold">-{skill.xpToNextLevel - skill.progressXP}</span> {'->'} Lv {skill.level + 1}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+              </Card>
+            ))}
+          </div>
+        )}
+        {skills.length === 0 && (
+          <Card className="p-8 border-2 border-dashed text-center ">
+            <p className="text-sm">Nenhuma habilidade criada</p>
+          </Card>
+        )}
       </div>
       <SkillModal
         isOpen={isModalOpen}

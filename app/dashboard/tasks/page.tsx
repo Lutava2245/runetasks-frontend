@@ -88,7 +88,7 @@ const Tasks = () => {
         </h3>
         <div className="grid gap-3">
           {pendingTasks.map((task) => (
-            <Card key={task.id} className="p-4 border-2 hover:border-(--primary)/30 flex flex-col md:flex-row md:justify-between">
+            <Card key={task.id} className="border-2 hover:border-(--primary)/30 transition-all flex flex-col md:flex-row md:justify-between">
               <div className="flex flex-col md:items-start mb-4 md:mb-0">
                 <div className="flex items-center gap-2 mb-2">
                   <h4 className="text-sm font-bold">{task.title}</h4>
@@ -139,48 +139,49 @@ const Tasks = () => {
             </Card>
           ))}
           {pendingTasks.length === 0 && (
-            <Card className="p-8 bg-(--card) border-2 border-dashed /50 text-center ">
+            <Card className="p-8 border-2 border-dashed text-center ">
               <p className="text-sm">Nenhuma tarefa pendente</p>
             </Card>
           )}
         </div>
       </div>
 
-      {/* Completed Tasks */}
-      <div className="mb-6">
-        <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 text-(--primary)" />
-          Concluídas ({completedTasks.length})
-        </h3>
-        <div className="grid gap-3">
-          {completedTasks.map((task) => (
-            <Card key={task.id} className="p-4 border-2 flex flex-col md:flex-row md:justify-between">
-              <div className="flex flex-col md:items-start mb-4 md:mb-0 opacity-60">
-                <div className="flex items-center gap-2 mb-2">
-                  <h4 className="text-sm font-bold">{task.title}</h4>
-                  <Badge className="border-(--primary) text-xs">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    OK
-                  </Badge>
+      {completedTasks.length > 0 && (
+        <div>
+          <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-(--primary)" />
+            Concluídas ({completedTasks.length})
+          </h3>
+          <div className="grid gap-3">
+            {completedTasks.map((task) => (
+              <Card key={task.id} className="border-2 flex flex-col md:flex-row md:justify-between">
+                <div className="flex flex-col md:items-start mb-4 md:mb-0 opacity-60">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="text-sm font-bold">{task.title}</h4>
+                    <Badge className="border-(--primary) text-xs">
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      OK
+                    </Badge>
+                  </div>
+                  <p className="text-xs mb-2">{task.description}</p>
+                  <div className="flex items-center gap-3 text-xs">
+                    <span className="font-bold">{task.skillName}</span>
+                    <span className="text-(--secondary) font-bold">+{task.taskXP} XP</span>
+                  </div>
                 </div>
-                <p className="text-xs mb-2">{task.description}</p>
-                <div className="flex items-center gap-3 text-xs">
-                  <span className="font-bold">{task.skillName}</span>
-                  <span className="text-(--secondary) font-bold">+{task.taskXP} XP</span>
+                <div className="flex gap-1 self-center md:self-auto">
+                  <Button
+                    variant="destructive"
+                    onClick={() => handleDelete(task.id)}
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </Button>
                 </div>
-              </div>
-              <div className="flex gap-1 self-center md:self-auto">
-                <Button
-                  variant="destructive"
-                  onClick={() => handleDelete(task.id)}
-                >
-                  <Trash2 className="w-5 h-5" />
-                </Button>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <TaskModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
