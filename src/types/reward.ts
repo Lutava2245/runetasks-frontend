@@ -6,8 +6,13 @@ export interface RewardResponse {
 	status: string
 }
 
-export interface RewardRequest {
+export interface RewardCreateRequest {
   title: string
   description: string
   likeLevel: number
+}
+
+export interface RewardEditRequest {
+  title: string
+  description: string
 }
