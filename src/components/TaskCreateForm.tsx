@@ -121,7 +121,7 @@ export default function TaskCreateForm({ onClose }: TaskCreateFormProps) {
         value={date}
         placeholder={date}
         onValueChange={(value) => setDate(value)}
-        min={new Date().toISOString().split('T')[0]}
+        min={getDateString(new Date())}
       />
 
       <Slider

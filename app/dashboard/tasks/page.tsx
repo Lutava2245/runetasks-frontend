@@ -11,9 +11,16 @@ import { Circle, Lock, Unlock, CheckCircle, Trash2, Pencil, Check } from "lucide
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { formatDate } from "@/src/utils/date";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { useSkills } from "@/src/contexts/SkillContext";
+import Link from "next/link";
+import { useRewards } from "@/src/contexts/RewardContext";
 
 const Tasks = () => {
   const { tasks, refreshTasks } = useTasks();
+  const { skills } = useSkills();
+  const { refreshUser } = useAuth();
+  const { refreshRewards } = useRewards();
 
   const [pendingTasks, setPendingTasks] = useState<TaskResponse[]>(() => tasks.filter(t => t.status !== "COMPLETED"));
   const [completedTasks, setCompletedTasks] = useState<TaskResponse[]>(() => tasks.filter(t => t.status === "COMPLETED"));
@@ -29,9 +36,11 @@ const Tasks = () => {
   const handleComplete = async (taskId: number) => {
     await completeTask(taskId);
     await refreshTasks();
+    await refreshUser();
+    await refreshRewards();
 
     const task = tasks.find(t => t.id === taskId);
-    toast.success('Tarefa concluída!', {description: `+${task?.taskXP || 0} XP`});
+    toast.success('Tarefa concluída!', { description: `+${task?.taskXP || 0} XP` });
   };
 
   const handleToggleLock = async (taskId: number) => {
@@ -39,8 +48,7 @@ const Tasks = () => {
     await refreshTasks();
 
     const task = tasks.find(t => t.id === taskId);
-
-    toast.info(task?.status === "BLOCKED" ? "Tarefa bloqueada." : "Tarefa desbloqueada.");
+    toast.info(task?.status === "BLOCKED" ? "Tarefa desbloqueada." : "Tarefa bloqueada.");
   };
 
   const toggleCreate = () => {
@@ -59,7 +67,7 @@ const Tasks = () => {
     try {
       await deleteTask(taskId);
       await refreshTasks();
-      toast.success("Tarefa excluída!");
+      toast.info("Tarefa excluída.");
     } catch (error: any) {
       toast.error("Não foi possível excluir tarefa.")
       console.error(error?.response?.data);
@@ -76,6 +84,7 @@ const Tasks = () => {
         <Button
           onClick={toggleCreate}
           className="py-1.5 px-4"
+          disabled={skills.length == 0}
         >
           Criar
         </Button>
@@ -140,7 +149,15 @@ const Tasks = () => {
           ))}
           {pendingTasks.length === 0 && (
             <Card className="p-8 border-2 border-dashed text-center ">
-              <p className="text-sm">Nenhuma tarefa pendente</p>
+              <p className="text-sm">Nenhuma tarefa pendente.
+                {skills.length !== 0
+                  ? <span onClick={toggleCreate} className="text-sm text-(--secondary) cursor-pointer"> Crie uma!</span>
+                  : <span className="text-sm text-(--secondary) cursor-pointer">
+                    <Link href={'/dashboard/skills'} className="text-sm text-(--secondary)"> Crie uma habilidade para começar!</Link>
+                  </span>
+                }</p>
+
+
             </Card>
           )}
         </div>
