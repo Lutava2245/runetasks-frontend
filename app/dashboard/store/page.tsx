@@ -11,7 +11,7 @@ import { buyAvatar, buyReward } from "@/src/services/storeService";
 import { selectAvatar } from "@/src/services/userService";
 import { AvatarResponse } from "@/src/types/avatar";
 import { RewardResponse } from "@/src/types/reward";
-import { Coins, ShoppingBag, Gift, Sparkles, CoinsIcon } from "lucide-react";
+import { Coins, ShoppingBag, Gift, Sparkles, CoinsIcon, Pencil } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -49,8 +49,9 @@ const Store = () => {
     if (user?.totalCoins ?? 0 >= (reward?.price ?? 0)) {
       await buyReward(rewardId);
       await refreshRewards();
+      await refreshUser();
 
-      toast.success(`Recompensa resgatada! -${reward?.price} moedas ${<CoinsIcon />}`);
+      toast.success(`Recompensa resgatada! -${reward?.price} moedas`);
     } else {
       toast.error("Moedas insuficientes!");
     }
@@ -61,7 +62,8 @@ const Store = () => {
       toast.info("Você já possui este cosmético!");
       return;
     }
-    if (user?.totalCoins ?? 0 < avatar.price) {
+
+    if ((user?.totalCoins ?? 0) < avatar.price) {
       toast.error("Moedas insuficientes!");
       return;
     }
@@ -122,11 +124,10 @@ const Store = () => {
           {availableRewards.map((reward) => (
             <Card
               key={reward.id}
-              onClick={() => toggleEdit(reward.id)}
-              className={`border-2
+              className={`border-2 transition-all
                 ${reward.status === "EXPENSIVE"
-                  ? 'opacity-60'
-                  : 'border-(--primary)/30 hover:border-(--primary) transition-all'
+                  ? 'hover:border-(--primary)/30 opacity-60'
+                  : 'border-(--primary)/30 hover:border-(--primary)'
                 }`}
             >
               <div className="flex items-start gap-2 mb-3">
@@ -142,13 +143,21 @@ const Store = () => {
                   <Coins className="w-4 h-4 text-(--secondary)" />
                   <span className="text-lg font-bold">{reward.price}</span>
                 </div>
-                <Button
-                  disabled={reward.status === "EXPENSIVE"}
-                  onClick={() => handleClaim(reward.id)}
-                  className="text-xs px-4"
-                >
-                  {reward.status !== "EXPENSIVE" ? "Resgatar" : "$$$"}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    disabled={reward.status === "EXPENSIVE"}
+                    onClick={() => handleClaim(reward.id)}
+                    className="text-xs px-4"
+                  >
+                    {reward.status !== "EXPENSIVE" ? "Resgatar" : "$$$"}
+                  </Button>
+                  <Button
+                    onClick={() => toggleEdit(reward.id)}
+                    className="text-xs px-4"
+                  >
+                    <Pencil />
+                  </Button>
+                </div>
               </div>
             </Card>
           ))}

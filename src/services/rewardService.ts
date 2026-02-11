@@ -14,5 +14,5 @@ export const editReward = (request: RewardEditRequest, rewardId: number) => {
 }
 
 export const deleteReward = (rewardId: number) => {
-  return api.delete('/reward/' + rewardId);
+  return api.delete('/rewards/' + rewardId);
 }
