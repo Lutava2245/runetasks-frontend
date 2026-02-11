@@ -7,6 +7,7 @@ import { deleteSkill } from "../services/skillService";
 import { useSkills } from "../contexts/SkillContext";
 import { toast } from "sonner";
 import { useTasks } from "../contexts/TaskContext";
+import Card from "./ui/Card";
 
 interface SkillModalProps {
   isOpen: boolean;
@@ -28,9 +29,9 @@ export default function SkillModal({ isOpen, onClose, formType, skill }: SkillMo
         await refreshTasks();
 
         onClose();
-        toast.success("Habilidade excluída!");
+        toast.info("Habilidade excluída.");
       } catch (error: any) {
-        toast.error("Não foi possível excluir habilidade.")
+        toast.error("Não foi possível excluir habilidade");
         console.error(error?.response?.data);
       }
     }
@@ -42,8 +43,8 @@ export default function SkillModal({ isOpen, onClose, formType, skill }: SkillMo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
-      <div
-        className="bg-(--card) p-8 rounded-xl shadow-2xl w-full max-w-md m-4 transform transition-all duration-300"
+      <Card
+        className="p-8 rounded-xl w-full max-w-md m-4 transform transition-all duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6">
@@ -84,7 +85,7 @@ export default function SkillModal({ isOpen, onClose, formType, skill }: SkillMo
               </div>
             ))
         }
-      </div>
+      </Card>
     </div>
   )
 }

@@ -83,7 +83,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <p className="mt-3 text-xs">
-                <span className="text-(--secondary) font-bold">-{(user?.xpToNextLevel && user?.progressXP) ? user?.xpToNextLevel - user?.progressXP : 0} XP</span> próx. nível
+                <span className="text-(--secondary) font-bold">-{user && user?.xpToNextLevel - user?.progressXP} XP</span> próx. nível
               </p>
             </Card>
 
@@ -201,8 +201,8 @@ export default function Dashboard() {
             <div className="w-24 h-24 mx-auto mb-3 text-7xl flex items-center justify-center border-2 transition-transform bg-background border-(--primary) rounded-lg">
               {user?.currentAvatarIcon}
             </div>
-            <p className="text-xs mb-2">{user?.nickname} - Nível {user?.level}</p>
-            <Badge className="text-xs text-(--secondary) border-(--secondary)">
+            <p className="text-xs mb-2">{user?.name} - Nível {user?.level}</p>
+            <Badge className="text-(--secondary) border-(--secondary)">
               {user?.totalCoins} Moedas
             </Badge>
           </Card>

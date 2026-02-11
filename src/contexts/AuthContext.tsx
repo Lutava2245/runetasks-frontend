@@ -6,6 +6,7 @@ import { LoginRequest, LoginResponse } from "../types/auth";
 import { UserResponse, UserCreateRequest } from "../types/user";
 import { api } from "../services/api";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type AuthContextType = {
   user: UserResponse | null;
@@ -79,6 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("authenticatedUser");
+    toast.info(user?.nickname + " saiu.")
     router.push('/');
   };
 
