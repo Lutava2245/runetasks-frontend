@@ -27,13 +27,13 @@ const Profile = () => {
   const handleUpdateUser = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (newPassword) {
+    if (newPassword && name !== user?.name) {
       if (newPassword !== confirmPassword) {
         toast.error("As senhas não coincidem.");
         return;
       }
-      const newPasswordRequest: ChangePasswordRequest = { currentPassword, newPassword };
 
+      const newPasswordRequest: ChangePasswordRequest = { currentPassword, newPassword };
       if (user) {
         try {
           const response = await changePassword(user.id, newPasswordRequest);
@@ -43,32 +43,66 @@ const Profile = () => {
         } catch (error: any) {
           if (error?.response?.status === 400) {
             toast.error("A senha está incorreta.");
+          } else if (error?.response?.status === 409) {
+            toast.error("A senha atual é idêntica a anterior.");
           } else {
             toast.error("Erro ao alterar senha. Tente novamente.");
           }
           console.error(error);
         }
       }
-    }
 
-    if (name === user?.name && !newPassword) {
-      toast.info("As informações não foram alteradas.");
-    } else {
-      if (name !== user?.name) {
-        const userData: UserUpdateRequest = { name };
-
-        if (user) {
-          try {
-            const response = await updateUser(user.id, userData);
-            if (response.status === 204) {
-              toast.success("Salvo!");
-            }
-          } catch (error: any) {
-            toast.error("Erro ao atualizar informações. Tente novamente.");
-            console.error(error);
+      const userData: UserUpdateRequest = { name };
+      if (user) {
+        try {
+          const response = await updateUser(user.id, userData);
+          if (response.status === 204) {
+            toast.success("Salvo!");
           }
+        } catch (error: any) {
+          toast.error("Erro ao atualizar informações. Tente novamente.");
+          console.error(error);
         }
       }
+    } else if (newPassword) {
+      if (newPassword !== confirmPassword) {
+        toast.error("As senhas não coincidem.");
+        return;
+      }
+
+      const newPasswordRequest: ChangePasswordRequest = { currentPassword, newPassword };
+      if (user) {
+        try {
+          const response = await changePassword(user.id, newPasswordRequest);
+          if (response.status === 204) {
+            toast.success("A senha foi alterada.");
+          }
+        } catch (error: any) {
+          if (error?.response?.status === 400) {
+            toast.error("A senha está incorreta.");
+          } else if (error?.response?.status === 409) {
+            toast.error("A senha atual é idêntica a anterior.");
+          } else {
+            toast.error("Erro ao alterar senha. Tente novamente.");
+          }
+          console.error(error);
+        }
+      }
+    } else if (name !== user?.name) {
+      const userData: UserUpdateRequest = { name };
+      if (user) {
+        try {
+          const response = await updateUser(user.id, userData);
+          if (response.status === 204) {
+            toast.success("Salvo!");
+          }
+        } catch (error: any) {
+          toast.error("Erro ao atualizar informações. Tente novamente.");
+          console.error(error);
+        }
+      }
+    } else {
+      toast.info("As informações não foram alteradas.");
     }
   }
 
@@ -148,7 +182,6 @@ const Profile = () => {
                 value={name}
                 placeholder={name}
                 onChange={e => setName(e.target.value)}
-                required
               />
 
               <FormField
@@ -158,7 +191,6 @@ const Profile = () => {
                 value={currentPassword}
                 placeholder="••••••••"
                 onChange={e => setCurrentPassword(e.target.value)}
-                required
               />
 
               <FormField
@@ -168,7 +200,8 @@ const Profile = () => {
                 value={newPassword}
                 placeholder="••••••••"
                 onChange={e => setNewPassword(e.target.value)}
-                required
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+                title="Mínimo de 8 caracteres, contendo letras maiusculas, mínusculas e números"
               />
 
               <FormField
@@ -178,7 +211,7 @@ const Profile = () => {
                 value={confirmPassword}
                 placeholder="••••••••"
                 onChange={e => setConfirmPassword(e.target.value)}
-                required
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
               />
 
               <Button type="submit" className="w-full text-xs">

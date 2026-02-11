@@ -41,20 +41,19 @@ export default function RegisterForm() {
       if (response.status === 201) {
         toast.success("Conta criada com sucesso!");
       }
+
+      try {
+        await login({ username: email, password });
+      } catch (error) {
+        toast.error("Não foi possível realizar login.")
+        console.error(error);
+      }
     } catch (error: any) {
       if (error?.response?.status === 409) {
         toast.error("Email ou nickname já existem.");
       } else {
         toast.error("Erro ao criar conta. Tente novamente.");
       }
-      console.error(error);
-    }
-
-    try {
-      await login({username: email, password });
-      toast.success("Login realizado com sucesso!");
-    } catch (error) {
-      toast.error("Não foi possível realizar login.")
       console.error(error);
     }
   };
@@ -93,6 +92,8 @@ export default function RegisterForm() {
         id="password"
         label="Senha"
         type="password"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+        title="Mínimo de 8 caracteres, contendo letras maiusculas, mínusculas e números"
         value={password}
         placeholder="••••••••"
         onChange={e => setPassword(e.target.value)}
@@ -103,6 +104,7 @@ export default function RegisterForm() {
         id="confirmPassword"
         label="Confirmar senha"
         type="password"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
         value={confirmPassword}
         placeholder="••••••••"
         onChange={e => setConfirmPassword(e.target.value)}
@@ -114,7 +116,7 @@ export default function RegisterForm() {
         variant="primary"
         className="w-full"
       >
-        Entrar
+        Cadastrar
       </Button>
     </form>
   );
