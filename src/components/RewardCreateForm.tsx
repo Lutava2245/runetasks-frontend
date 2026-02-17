@@ -39,26 +39,22 @@ export default function RewardCreateForm({ onClose }: RewardCreateFormProps) {
   const handleCreateReward = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !likeLevel) {
-      toast.error("Preencha todos os campos.");
+      toast.info("Preencha os campos necessários para cadastrar");
       return;
     }
 
-    const newReward: RewardCreateRequest = {
-      title,
-      description,
-      likeLevel
-    };
+    const newReward: RewardCreateRequest = { title, description, likeLevel };
 
     try {
       const response = await registerReward(newReward);
-
       if (response.status === 201) {
         toast.success("Recompensa criada com sucesso!");
         await refreshRewards();
+
         onClose();
       }
-    } catch (error) {
-      toast.error("Erro ao criar recompensa. Tente novamente.");
+    } catch (error: any) {
+      toast.error("Ocorreu um erro ao criar recompensa");
       console.error(error);
     }
   };

@@ -14,7 +14,7 @@ const AvatarContext = createContext<AvatarContextType | null>(null);
 
 export const AvatarProvider = ({ children }: { children: React.ReactNode }) => {
   const [avatars, setAvatars] = useState<AvatarResponse[]>([]);
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, logout } = useAuth();
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -28,7 +28,9 @@ export const AvatarProvider = ({ children }: { children: React.ReactNode }) => {
       setAvatars(response.data);
     } catch (error: any) {
       if (error.response?.status !== 401) {
-        console.error("Erro ao carregar avatares", error);
+        console.error("Erro ao carregar avatares:\n", error);
+      } else {
+        logout();
       }
     }
   };

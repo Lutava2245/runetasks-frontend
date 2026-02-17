@@ -45,51 +45,76 @@ const Store = () => {
 
   const handleClaim = async (rewardId: number) => {
     const reward = rewards.find(r => r.id === rewardId);
-
-    if (user?.totalCoins ?? 0 >= (reward?.price ?? 0)) {
-      await buyReward(rewardId);
-      await refreshRewards();
-      await refreshUser();
-
-      toast.success(`Recompensa resgatada! -${reward?.price} moedas`);
-    } else {
-      toast.error("Moedas insuficientes!");
+    if (reward?.status === "REDEEMED") {
+      toast.info("Você já resgatou esta recompensa!");
     }
-  };
 
-  const handleBuyCosmetic = async (avatar: typeof avatars[0]) => {
+    try {
+      const response = await buyReward(rewardId);
+      if (response.status === 204) {
+        toast.success(`Recompensa resgatada!`, { description: ` -${reward?.price} moedas` });
+
+        await refreshRewards();
+        await refreshUser();
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 404) {
+        toast.error("Não foi possível encontrar recompensa")
+      } else if (error?.response?.status === 409) {
+        toast.info("Você já resgatou esta recompensa!");
+      } else if (error?.response?.status === 412) {
+        toast.error("Moedas insuficientes!");
+      } else {
+        toast.error("Ocorreu um erro ao resgatar recompensa")
+      }
+      console.error(error);
+    }
+  }
+
+  const handleBuyAvatar = async (avatar: typeof avatars[0]) => {
     if (avatar.owned) {
-      toast.info("Você já possui este cosmético!");
-      return;
-    }
-
-    if ((user?.totalCoins ?? 0) < avatar.price) {
-      toast.error("Moedas insuficientes!");
+      toast.info("Você já possui este avatar!");
       return;
     }
 
     try {
-      await buyAvatar(avatar.id);
-      await refreshUser();
-      await refreshAvatars();
+      const response = await buyAvatar(avatar.id);
+      if (response.status === 204) {
+        toast.success(`${avatar.title} adquirido!`, { description: ` -${avatar?.price} moedas` });
 
-      toast.success(`${avatar.title} adquirido!`);
-    } catch (error) {
-      toast.error("Ocorreu um erro ao comprar avatar.");
+        await refreshAvatars();
+        await refreshUser();
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 404) {
+        toast.error("Não foi possível encontrar avatar")
+      } else if (error?.response?.status === 409) {
+        toast.info("Você já possui este avatar!");
+      } else if (error?.response?.status === 412) {
+        toast.error("Moedas insuficientes!");
+      } else {
+        toast.error("Ocorreu um erro ao comprar avatar.");
+      }
       console.error(error);
     }
   };
 
   const handleEquipCosmetic = async (avatar: AvatarResponse) => {
-    if (user) {
-      if (user?.currentAvatarName !== avatar.iconName) {
-        user.currentAvatarName = avatar.iconName;
-        user.currentAvatarIcon = avatar.icon;
+    if (user && user.currentAvatarName !== avatar.iconName) {
+      try {
+        const response = await selectAvatar(avatar.iconName);
+        if (response.status === 204) {
+          toast.success('Avatar atualizado!')
 
-        await selectAvatar(avatar.iconName);
-        await refreshUser();
-        await refreshAvatars();
-        toast.success("Cosmético equipado!");
+          await refreshUser();
+        }
+      } catch (error: any) {
+        if (error?.response?.status === 404) {
+          toast.error("Não foi possível encontrar avatar")
+        } else {
+          toast.error("Ocorreu um erro ao equipar avatar");
+        }
+        console.error(error);
       }
     }
   };
@@ -233,7 +258,7 @@ const Store = () => {
 
                     <Button
                       className="text-xs h-7"
-                      onClick={() => handleBuyCosmetic(avatar)}
+                      onClick={() => handleBuyAvatar(avatar)}
                       disabled={(user?.totalCoins ?? 0) < avatar.price}
                     >
                       Comprar

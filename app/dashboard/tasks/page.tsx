@@ -14,13 +14,11 @@ import { formatDate } from "@/src/utils/date";
 import { useAuth } from "@/src/contexts/AuthContext";
 import { useSkills } from "@/src/contexts/SkillContext";
 import Link from "next/link";
-import { useRewards } from "@/src/contexts/RewardContext";
 
 const Tasks = () => {
   const { tasks, refreshTasks } = useTasks();
   const { skills } = useSkills();
   const { refreshUser } = useAuth();
-  const { refreshRewards } = useRewards();
 
   const [pendingTasks, setPendingTasks] = useState<TaskResponse[]>(() => tasks.filter(t => t.status !== "COMPLETED"));
   const [completedTasks, setCompletedTasks] = useState<TaskResponse[]>(() => tasks.filter(t => t.status === "COMPLETED"));
@@ -34,21 +32,51 @@ const Tasks = () => {
   }, [tasks])
 
   const handleComplete = async (taskId: number) => {
-    await completeTask(taskId);
-    await refreshTasks();
-    await refreshUser();
-    await refreshRewards();
-
     const task = tasks.find(t => t.id === taskId);
-    toast.success('Tarefa concluída!', { description: `+${task?.taskXP || 0} XP` });
+    if (task?.status === "COMPLETED") {
+      toast.info("Você já concluiu esta tarefa!");
+    }
+
+    try {
+      const response = await completeTask(taskId);
+      if (response.status === 204) {
+        await refreshTasks();
+        await refreshUser();
+
+        toast.success('Tarefa concluída!', { description: `+${task?.taskXP || 0} XP` });
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 404) {
+        toast.error("Não foi possível encontrar tarefa")
+      } else if (error?.response?.status === 409) {
+        toast.info("Você já concluiu esta tarefa!");
+      } else {
+        toast.error("Ocorreu um erro ao concluir tarefa")
+      }
+      console.error(error);
+    }
   };
 
   const handleToggleLock = async (taskId: number) => {
-    await blockTask(taskId);
-    await refreshTasks();
-
     const task = tasks.find(t => t.id === taskId);
-    toast.info(task?.status === "BLOCKED" ? "Tarefa desbloqueada." : "Tarefa bloqueada.");
+
+    try {
+      const response = await blockTask(taskId);
+      if (response.status === 204) {
+        await refreshTasks();
+
+        toast.info(task?.status === "BLOCKED" ? "Tarefa desbloqueada" : "Tarefa bloqueada");
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 404) {
+        toast.error("Não foi possível encontrar tarefa")
+      } else if (error?.response?.status === 409) {
+        toast.info("Você já concluiu esta tarefa!");
+      } else {
+        toast.error("Ocorreu um erro ao bloquear/desbloquear tarefa")
+      }
+      console.error(error);
+    }
   };
 
   const toggleCreate = () => {
@@ -65,12 +93,20 @@ const Tasks = () => {
 
   const handleDelete = async (taskId: number) => {
     try {
-      await deleteTask(taskId);
-      await refreshTasks();
-      toast.info("Tarefa excluída.");
+      const response = await deleteTask(taskId);
+      if (response.status === 204) {
+        toast.info("Tarefa excluída");
+        await refreshTasks();
+      }
     } catch (error: any) {
-      toast.error("Não foi possível excluir tarefa.")
-      console.error(error?.response?.data);
+      if (error?.response?.status === 404) {
+        toast.error("Não foi possível encontrar tarefa")
+      } else if (error?.response?.status === 412) {
+        toast.info("A tarefa está bloqueada");
+      } else {
+        toast.error("Ocorreu um erro ao excluir tarefa")
+      }
+      console.error(error);
     }
   };
 
@@ -141,6 +177,7 @@ const Tasks = () => {
                 <Button
                   variant="destructive"
                   onClick={() => handleDelete(task.id)}
+                  disabled={task.status === "BLOCKED"}
                 >
                   <Trash2 className="w-5 h-5" />
                 </Button>
@@ -156,8 +193,6 @@ const Tasks = () => {
                     <Link href={'/dashboard/skills'} className="text-sm text-(--secondary)"> Crie uma habilidade para começar!</Link>
                   </span>
                 }</p>
-
-
             </Card>
           )}
         </div>

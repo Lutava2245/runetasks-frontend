@@ -24,14 +24,20 @@ export default function RewardFormModal({ isOpen, onClose, formType, reward }: R
     e.preventDefault();
     if (reward) {
       try {
-        await deleteReward(reward.id);
-        await refreshRewards();
+        const response = await deleteReward(reward.id);
+        if (response.status === 204) {
+          toast.info("Recompensa excluída");
+          await refreshRewards();
 
-        onClose();
-        toast.info("Recompensa excluída.")
+          onClose();
+        }
       } catch (error: any) {
-        toast.error("Não foi possível excluir recompensa.");
-        console.error(error?.response?.data);
+        if (error?.response?.status === 404) {
+          toast.error("Não foi possível encontrar recompensa");
+        } else {
+          toast.error("Ocorreu um erro ao excluir recompensa");
+        }
+        console.error(error);
       }
     }
   }

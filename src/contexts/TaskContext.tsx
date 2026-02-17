@@ -14,7 +14,7 @@ const TaskContext = createContext<TaskContextType | null>(null);
 
 export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
   const [tasks, setTasks] = useState<TaskResponse[]>([]);
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, logout } = useAuth();
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -29,7 +29,9 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
         setTasks(response.data);
       } catch (error: any) {
         if (error.response?.status !== 401) {
-          console.error("Erro ao carregar tarefas", error);
+          console.error("Erro ao carregar tarefas:\n", error);
+        } else {
+          logout();
         }
       }
     }

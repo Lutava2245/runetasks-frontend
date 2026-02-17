@@ -14,15 +14,15 @@ export default function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username || !password) {
-      toast.error("Preencha o email/nickname e a senha.");
+      toast.info("Preencha o email/nickname e a senha.");
       return;
     }
 
     try {
       await login({username, password });
       toast.success("Login realizado com sucesso!");
-    } catch (error) {
-      toast.error("Não foi possível realizar login.")
+    } catch (error: any) {
+      toast.error("Ocorreu um erro ao realizar login")
       console.error(error);
     }
   };

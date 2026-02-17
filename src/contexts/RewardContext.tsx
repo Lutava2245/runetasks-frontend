@@ -14,7 +14,7 @@ const RewardContext = createContext<RewardContextType | null>(null);
 
 export const RewardProvider = ({ children }: { children: React.ReactNode }) => {
   const [rewards, setRewards] = useState<RewardResponse[]>([]);
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, logout } = useAuth();
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -29,7 +29,9 @@ export const RewardProvider = ({ children }: { children: React.ReactNode }) => {
         setRewards(response.data);
       } catch (error: any) {
         if (error.response?.status !== 401) {
-          console.error("Erro ao carregar recompensas", error);
+          console.error("Erro ao carregar recompensas:\n", error);
+        } else {
+          logout();
         }
       }
     }

@@ -39,11 +39,17 @@ export default function Dashboard() {
   const handleEquipCosmetic = async (avatar: AvatarResponse) => {
     if (user && user.currentAvatarName !== avatar.iconName) {
       try {
-        await selectAvatar(avatar.iconName);
-        await refreshUser();
-        toast.success('Avatar atualizado!')
-      } catch (error) {
-        toast.error("Falha ao equipar cosmético.");
+        const response = await selectAvatar(avatar.iconName);
+        if (response.status === 204) {
+          toast.success('Avatar atualizado!')
+          await refreshUser();
+        }
+      } catch (error: any) {
+        if (error?.response?.status === 404) {
+          toast.error("Não foi possível encontrar avatar");
+        } else {
+          toast.error("Ocorreu um erro ao equipar avatar");
+        }
         console.error(error);
       }
     }

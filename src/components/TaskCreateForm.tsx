@@ -54,7 +54,7 @@ export default function TaskCreateForm({ onClose }: TaskCreateFormProps) {
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !difficulty || !skillName || !date || !repeatType) {
-      toast.error("Preencha todos os campos.");
+      toast.info("Preencha os campos necessários para cadastrar");
       return;
     }
 
@@ -71,14 +71,14 @@ export default function TaskCreateForm({ onClose }: TaskCreateFormProps) {
 
     try {
       const response = await registerTask(newTask);
-
       if (response.status === 201) {
         toast.success("Tarefa criada com sucesso!");
         await refreshTasks();
+
         onClose();
       }
-    } catch (error) {
-      toast.error("Erro ao criar tarefa. Tente novamente.");
+    } catch (error: any) {
+      toast.error("Ocorreu um erro ao criar tarefa");
       console.error(error);
     }
   };

@@ -34,29 +34,27 @@ export default function SkillEditForm({ onClose, skill }: SkillEditFormProps) {
   const handleSaveSkill = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !icon) {
-      toast.error("Modifique algum campo para salvar");
+      toast.info("Preencha os campos necessários para salvar");
       return;
     }
 
-    const newSkill: SkillRequest = {
-      name, icon
-    }
+    const newSkill: SkillRequest = { name, icon }
 
     try {
-      if (skill == null) {
-        toast.error('Habilidade não encontrada. Tente novamente mais tarde.')
-        return;
-      }
       const response = await editSkill(newSkill, skill.id);
       if (response.status === 204) {
         toast.success("Habilidade salva com sucesso!");
-      }
+        await refreshSkills();
 
-      await refreshSkills();
-      onClose();
-    } catch (error) {
-      toast.error("Erro ao salvar habilidade. Tente novamente.");
-      console.error(error);
+        onClose();
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 409) {
+        toast.info("Habilidade de mesmo nome já existe!");
+      } else {
+        toast.error("Ocorreu um erro ao salvar habilidade");
+        console.error(error);
+      }
     }
   };
 

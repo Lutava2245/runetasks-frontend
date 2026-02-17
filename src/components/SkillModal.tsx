@@ -24,15 +24,21 @@ export default function SkillModal({ isOpen, onClose, formType, skill }: SkillMo
     e.preventDefault();
     if (skill) {
       try {
-        await deleteSkill(skill.id);
-        await refreshSkills();
-        await refreshTasks();
+        const response = await deleteSkill(skill.id);
+        if (response.status === 204) {
+          toast.info("Habilidade excluída");
+          await refreshSkills();
+          await refreshTasks();
 
-        onClose();
-        toast.info("Habilidade excluída.");
+          onClose();
+        }
       } catch (error: any) {
-        toast.error("Não foi possível excluir habilidade");
-        console.error(error?.response?.data);
+        if (error?.response?.status === 404) {
+          toast.error("Não foi possível encontrar habilidade")
+        } else {
+          toast.error("Ocorreu um erro ao excluir habilidade");
+        }
+        console.error(error);
       }
     }
   }

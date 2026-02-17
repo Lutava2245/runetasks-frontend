@@ -19,25 +19,19 @@ export default function RegisterForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !nickname || !email || !password || !confirmPassword) {
-      toast.error("Preencha todos os campos para cadastro.");
+      toast.info("Preencha os campos necessários para cadastrar");
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error("As senhas não coincidem.");
+      toast.error("As senhas não coincidem");
       return;
     }
 
-    const newUser: UserCreateRequest = {
-      name,
-      nickname,
-      email,
-      password
-    };
+    const newUser: UserCreateRequest = { name, nickname, email, password };
 
     try {
       const response = await registerUser(newUser);
-
       if (response.status === 201) {
         toast.success("Conta criada com sucesso!");
       }
@@ -45,16 +39,16 @@ export default function RegisterForm() {
       try {
         await login({ username: email, password });
       } catch (error) {
-        toast.error("Não foi possível realizar login.")
+        toast.error("Não foi possível realizar login")
         console.error(error);
       }
     } catch (error: any) {
       if (error?.response?.status === 409) {
-        toast.error("Email ou nickname já existem.");
+        toast.info("Email ou nickname já existem!");
       } else {
-        toast.error("Erro ao criar conta. Tente novamente.");
+        toast.error("Ocorreu um erro ao criar conta");
+        console.error(error);
       }
-      console.error(error);
     }
   };
 

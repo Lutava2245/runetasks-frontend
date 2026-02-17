@@ -19,28 +19,22 @@ export default function RewardEditForm({ onClose, reward }: RewardEditFormProps)
   const handleSaveReward = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title && !description) {
-      toast.error("Modifique algum campo para salvar");
+      toast.info("Preencha os campos necessários para salvar");
       return;
     }
 
-    const newReward: RewardEditRequest = {
-      title, description
-    };
+    const newReward: RewardEditRequest = { title, description };
 
     try {
-      if (reward == null) {
-        toast.error('Recompensa não encontrada. Tente novamente mais tarde.')
-        return;
-      }
       const response = await editReward(newReward, reward.id);
       if (response.status === 204) {
         toast.success("Recompensa salva com sucesso!");
-      }
+        await refreshRewards();
 
-      await refreshRewards();
-      onClose();
-    } catch (error) {
-      toast.error("Erro ao salvar recompensa. Tente novamente.");
+        onClose();
+      }
+    } catch (error: any) {
+      toast.error("Ocorreu um erro ao salvar recompensa");
       console.error(error);
     }
   };
@@ -65,7 +59,7 @@ export default function RewardEditForm({ onClose, reward }: RewardEditFormProps)
       />
 
       <Button type="submit" className="w-full text-xs mt-1">
-        Criar Recompensa
+        Salvar Recompensa
       </Button>
     </form>
   )

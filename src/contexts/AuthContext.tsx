@@ -44,13 +44,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const response = await getAuthenticatedUser();
         const userResponse = response.data;
 
-        localStorage.setItem("authenticatedUser", JSON.stringify(response.data));
+        localStorage.setItem("authenticatedUser", JSON.stringify(userResponse));
         setUser(userResponse);
 
         console.log("Usuário carregado: " + userResponse.nickname);
-      } catch (error) {
-        console.error(error);
-        logout();
+      } catch (error: any) {
+        if (error.response?.status !== 401) {
+          console.error("Erro ao carregar usuário autenticado:\n", error);
+        } else {
+          logout();
+        }
       } finally {
         setLoading(false);
       }
@@ -80,14 +83,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("authenticatedUser");
-    toast.info(user?.nickname + " saiu.")
+    toast.info(user?.nickname + " saiu")
     router.push('/');
   };
 
   const refreshUser = async () => {
-    const response = await getAuthenticatedUser();
-    setUser(response.data);
-    localStorage.setItem("authenticatedUser", JSON.stringify(response.data));
+    try {
+      const response = await getAuthenticatedUser();
+      setUser(response.data);
+      localStorage.setItem("authenticatedUser", JSON.stringify(response.data));
+    } catch (error: any) {
+      if (error.response?.status !== 401) {
+        console.error("Erro ao carregar avatares", error);
+      }
+    }
   };
 
   return (
