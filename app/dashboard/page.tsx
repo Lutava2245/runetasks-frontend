@@ -11,6 +11,7 @@ import { useTasks } from "@/src/contexts/TaskContext";
 import { selectAvatar } from "@/src/services/userService";
 import { AvatarResponse } from "@/src/types/avatar";
 import { formatDate, isToday } from "@/src/utils/date";
+import { getAvatarIcon } from "@/src/utils/userAvatar";
 import clsx from "clsx";
 import { Check, Palette, User } from "lucide-react";
 import Link from "next/link";
@@ -37,9 +38,9 @@ export default function Dashboard() {
   }, [avatars]);
 
   const handleEquipCosmetic = async (avatar: AvatarResponse) => {
-    if (user && user.currentAvatarName !== avatar.iconName) {
+    if (user && user.currentAvatarName !== avatar.icon) {
       try {
-        const response = await selectAvatar(avatar.iconName);
+        const response = await selectAvatar(avatar.icon);
         if (response.status === 204) {
           toast.success('Avatar atualizado!')
           await refreshUser();
@@ -75,7 +76,7 @@ export default function Dashboard() {
               <div className="mt-3">
                 <div className="flex justify-between text-xs mb-2">
                   XP
-                  <span className="text-foreground font-bold">{user?.progressXP} / {user?.xpToNextLevel}</span>
+                  <span className="text-foreground font-bold">{user?.progressXp} / {user?.xpToNextLevel}</span>
                 </div>
                 <Progress value={user?.levelPercentage ?? 0} />
               </div>
@@ -84,12 +85,12 @@ export default function Dashboard() {
             <Card className="border-2 hover:border-(--secondary)/30 transition-all">
               <div className="flex items-center gap-3">
                 <div>
-                  <p className="text-xs">Total XP</p>
-                  <p className="text-2xl font-bold text-foreground">{user?.totalXP}</p>
+                  <p className="text-xs">Total Xp</p>
+                  <p className="text-2xl font-bold text-foreground">{user?.totalXp}</p>
                 </div>
               </div>
               <p className="mt-3 text-xs">
-                <span className="text-(--secondary) font-bold">-{user && user?.xpToNextLevel - user?.progressXP} XP</span> próx. nível
+                <span className="text-(--secondary) font-bold">-{user && user?.xpToNextLevel - user?.progressXp} XP</span> próx. nível
               </p>
             </Card>
 
@@ -155,7 +156,7 @@ export default function Dashboard() {
                           </Badge>
                         )}
                       </div>
-                      <span className="text-xs font-bold text-(--secondary)">+{task.taskXP}</span>
+                      <span className="text-xs font-bold text-(--secondary)">+{task.taskXp}</span>
                     </div>
                   )
                 })}
@@ -177,7 +178,7 @@ export default function Dashboard() {
                 </Link>
               </div>
               <div className="space-y-2">
-                {skills.sort((a, b) => b.totalXP - a.totalXP)
+                {skills.sort((a, b) => b.totalXp - a.totalXp)
                   .slice(0, 5).map((skill, index) => (
                     <div key={index} className="space-y-1">
                       <div className="flex items-center justify-between">
@@ -205,7 +206,7 @@ export default function Dashboard() {
               Avatar
             </h3>
             <div className="w-24 h-24 mx-auto mb-3 text-7xl flex items-center justify-center border-2 transition-transform bg-background border-(--primary) rounded-lg">
-              {user?.currentAvatarIcon}
+              {getAvatarIcon(user && user.currentAvatarIcon)}
             </div>
             <p className="text-xs mb-2">{user?.name} - Nível {user?.level}</p>
             <Badge className="text-(--secondary) border-(--secondary)">
@@ -226,12 +227,12 @@ export default function Dashboard() {
                   title={avatar.title}
                   className={`border-2 w-18 h-18 text-xl m-3
                     bg-background hover:bg-(--dark-primary)/25 hover:scale-120
-                    ${user?.currentAvatarName === avatar.iconName
+                    ${user?.currentAvatarName === avatar.icon
                       ? 'border-(--secondary) hover:border-(--secondary) hover:bg-(--secondary)/25'
                       : 'border-(--dark-primary) hover:border-(--primary)'
                     }`}
                 >
-                  {avatar.icon}
+                  {getAvatarIcon(avatar.icon)}
                 </Button>
               ))}
             </div>

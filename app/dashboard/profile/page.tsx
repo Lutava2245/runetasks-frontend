@@ -10,6 +10,7 @@ import { useTasks } from "@/src/contexts/TaskContext";
 import { changePassword, updateUser } from "@/src/services/userService";
 import { ChangePasswordRequest, UserUpdateRequest } from "@/src/types/user";
 import { formatDate } from "@/src/utils/date";
+import { getAvatarIcon } from "@/src/utils/userAvatar";
 import { Award, Calendar, CheckCircle, Coins, Star } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -90,7 +91,7 @@ const Profile = () => {
         <div className="space-y-4">
           <Card className="border-2 hover:border-(--primary)/30 text-center transition-all">
             <div className="w-20 h-20 mx-auto mb-3 text-5xl flex items-center justify-center border-2 transition-transform bg-background border-(--primary) rounded-lg">
-              {user?.currentAvatarIcon}
+              {getAvatarIcon(user && user.currentAvatarIcon)}
             </div>
             <h3 className="text-sm font-bold items-center mb-1">{user?.nickname}</h3>
             <p className="text-xs mb-2">{user?.email}</p>
@@ -107,7 +108,7 @@ const Profile = () => {
                   <Star className="w-5 h-5" />
                   XP
                 </span>
-                <span className="font-bold">{user?.totalXP}</span>
+                <span className="font-bold">{user?.totalXp}</span>
               </div>
 
               <div className="flex items-center justify-between rounded-lg border-2 border-(--primary)/30 bg-background p-2">

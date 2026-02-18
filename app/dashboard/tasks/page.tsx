@@ -43,7 +43,7 @@ const Tasks = () => {
         await refreshTasks();
         await refreshUser();
 
-        toast.success('Tarefa concluída!', { description: `+${task?.taskXP || 0} XP` });
+        toast.success('Tarefa concluída!', { description: `+${task?.taskXp || 0} Xp` });
       }
     } catch (error: any) {
       if (error?.response?.status === 404) {
@@ -141,9 +141,9 @@ const Tasks = () => {
                     <Lock className="w-3 h-3" />
                   )}
                   <Badge className="text-xs">
-                    {task.taskXP === 20 && "Fácil"}
-                    {task.taskXP === 30 && "Médio"}
-                    {task.taskXP === 50 && "Difícil"}
+                    {task.taskXp === 20 && "Fácil"}
+                    {task.taskXp === 30 && "Médio"}
+                    {task.taskXp === 50 && "Difícil"}
                   </Badge>
                   <Badge className="border-(--secondary) text-(--secondary)">
                     {formatDate(task.date)}
@@ -152,7 +152,7 @@ const Tasks = () => {
                 <p className="text-xs mb-2">{task.description || null}</p>
                 <div className="flex items-center gap-3 text-xs">
                   <span className="font-bold">{task.skillName}</span>
-                  <span className="text-(--secondary) font-bold">+{task.taskXP} XP</span>
+                  <span className="text-(--secondary) font-bold">+{task.taskXp} Xp</span>
                 </div>
               </div>
               <div className="flex gap-1 self-center md:self-auto">
@@ -218,7 +218,7 @@ const Tasks = () => {
                   <p className="text-xs mb-2">{task.description}</p>
                   <div className="flex items-center gap-3 text-xs">
                     <span className="font-bold">{task.skillName}</span>
-                    <span className="text-(--secondary) font-bold">+{task.taskXP} XP</span>
+                    <span className="text-(--secondary) font-bold">+{task.taskXp} XP</span>
                   </div>
                 </div>
                 <div className="flex gap-1 self-center md:self-auto">

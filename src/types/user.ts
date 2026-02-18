@@ -8,8 +8,8 @@ export interface UserResponse {
   level: number
   xpToNextLevel: number
   levelPercentage: number
-  progressXP: number
-  totalXP: number
+  progressXp: number
+  totalXp: number
   totalCoins: number
   unlockableItems: number
   createdAt: Date

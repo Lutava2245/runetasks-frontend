@@ -156,7 +156,7 @@ const Skills = () => {
                     </div>
                     <Progress value={skill.levelPercentage} className="h-2" />
                     <p className="text-xs ">
-                      <span className="text-(--secondary) font-bold">-{skill.xpToNextLevel - skill.progressXP}</span> {'->'} Lv {skill.level + 1}
+                      <span className="text-(--secondary) font-bold">-{skill.xpToNextLevel - skill.progressXp}</span> {'->'} Lv {skill.level + 1}
                     </p>
                   </div>
                 </div>

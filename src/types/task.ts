@@ -4,7 +4,7 @@ export interface TaskResponse {
   description: string
   status: string
   block: boolean
-  taskXP: number
+  taskXp: number
   taskCoins: number
   skillName: string
   date: Date
