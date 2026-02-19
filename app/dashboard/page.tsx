@@ -5,9 +5,9 @@ import Button from "@/src/components/ui/Button";
 import Card from "@/src/components/ui/Card";
 import Progress from "@/src/components/ui/Progress";
 import { useAuth } from "@/src/contexts/AuthContext";
-import { useAvatars } from "@/src/contexts/AvatarContext";
-import { useSkills } from "@/src/contexts/SkillContext";
-import { useTasks } from "@/src/contexts/TaskContext";
+import useAvatars from "@/src/hooks/useAvatars";
+import useSkills from "@/src/hooks/useSkills";
+import useTasks from "@/src/hooks/useTasks";
 import { selectAvatar } from "@/src/services/userService";
 import { AvatarResponse } from "@/src/types/avatar";
 import { formatDate, isToday } from "@/src/utils/date";
@@ -15,35 +15,23 @@ import { getAvatarIcon } from "@/src/utils/userAvatar";
 import clsx from "clsx";
 import { Check, Palette, User } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function Dashboard() {
-  const { user, token, refreshUser } = useAuth();
-  const { tasks, refreshTasks } = useTasks();
-  const { skills, refreshSkills } = useSkills();
-  const { avatars, refreshAvatars } = useAvatars();
+  const { user, refreshUser } = useAuth();
+  const { data: tasks = [], isLoading: loadingTasks } = useTasks();
+  const { data: skills = [], isLoading: loadingSkills } = useSkills();
+  const { data: avatars = [], isLoading: loadingAvatars } = useAvatars();
 
-  const [ownedAvatars, setOwnedAvatars] = useState<AvatarResponse[]>(() => avatars.filter(a => a.owned));
-
-  useEffect(() => {
-    refreshUser();
-    refreshTasks();
-    refreshSkills();
-    refreshAvatars();
-  }, [token]);
-
-  useEffect(() => {
-    setOwnedAvatars(avatars.filter(a => a.owned));
-  }, [avatars]);
+  const ownedAvatars = avatars.filter(a => a.owned);
 
   const handleEquipCosmetic = async (avatar: AvatarResponse) => {
-    if (user && user.currentAvatarName !== avatar.icon) {
+    if (user && user.currentAvatar !== avatar.icon) {
       try {
         const response = await selectAvatar(avatar.icon);
         if (response.status === 204) {
           toast.success('Avatar atualizado!')
-          await refreshUser();
+          refreshUser();
         }
       } catch (error: any) {
         if (error?.response?.status === 404) {
@@ -206,7 +194,7 @@ export default function Dashboard() {
               Avatar
             </h3>
             <div className="w-24 h-24 mx-auto mb-3 text-7xl flex items-center justify-center border-2 transition-transform bg-background border-(--primary) rounded-lg">
-              {getAvatarIcon(user && user.currentAvatarIcon)}
+              {getAvatarIcon(user && user.currentAvatar)}
             </div>
             <p className="text-xs mb-2">{user?.name} - Nível {user?.level}</p>
             <Badge className="text-(--secondary) border-(--secondary)">
@@ -227,7 +215,7 @@ export default function Dashboard() {
                   title={avatar.title}
                   className={`border-2 w-18 h-18 text-xl m-3
                     bg-background hover:bg-(--dark-primary)/25 hover:scale-120
-                    ${user?.currentAvatarName === avatar.icon
+                    ${user?.currentAvatar === avatar.icon
                       ? 'border-(--secondary) hover:border-(--secondary) hover:bg-(--secondary)/25'
                       : 'border-(--dark-primary) hover:border-(--primary)'
                     }`}

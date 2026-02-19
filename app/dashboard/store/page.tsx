@@ -5,32 +5,33 @@ import Button from "@/src/components/ui/Button";
 import Card from "@/src/components/ui/Card";
 import RewardFormModal from "@/src/components/RewardModal";
 import { useAuth } from "@/src/contexts/AuthContext";
-import { useAvatars } from "@/src/contexts/AvatarContext";
-import { useRewards } from "@/src/contexts/RewardContext";
 import { buyAvatar, buyReward } from "@/src/services/storeService";
 import { selectAvatar } from "@/src/services/userService";
 import { AvatarResponse } from "@/src/types/avatar";
 import { RewardResponse } from "@/src/types/reward";
-import { Coins, ShoppingBag, Gift, Sparkles, CoinsIcon, Pencil } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Coins, ShoppingBag, Gift, Sparkles, Pencil, ChevronDown } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { getAvatarIcon } from "@/src/utils/userAvatar";
+import { useQueryClient } from "@tanstack/react-query";
+import useRewards from "@/src/hooks/useRewards";
+import useAvatars from "@/src/hooks/useAvatars";
+import clsx from "clsx";
 
 const Store = () => {
+  const queryClient = useQueryClient();
   const { user, refreshUser } = useAuth();
-  const { rewards, refreshRewards } = useRewards();
-  const { avatars, refreshAvatars } = useAvatars();
+  const { data: rewards = [] } = useRewards();
+  const { data: avatars = [] } = useAvatars();
 
-  const [availableRewards, setAvailableRewards] = useState<RewardResponse[]>(() => rewards.filter(r => r.status !== "REDEEMED"));
-  const [claimedRewards, setClaimedRewards] = useState<RewardResponse[]>(() => rewards.filter(r => r.status === "REDEEMED"));
+  const availableRewards = rewards.filter(r => r.status !== "REDEEMED");
+  const claimedRewards = rewards.filter(r => r.status === "REDEEMED");
+
+  const [isAvailableOpen, setIsAvailableOpen] = useState(true);
+  const [isClaimedOpen, setIsClaimedOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formType, setFormType] = useState("");
   const [targetReward, setTargetReward] = useState<RewardResponse | null>(null);
-
-  useEffect(() => {
-    setAvailableRewards(rewards.filter(r => r.status !== "REDEEMED"));
-    setClaimedRewards(rewards.filter(r => r.status === "REDEEMED"));
-  }, [rewards])
 
   const toggleCreate = () => {
     setFormType("create");
@@ -55,8 +56,8 @@ const Store = () => {
       if (response.status === 204) {
         toast.success(`Recompensa resgatada!`, { description: ` -${reward?.price} moedas` });
 
-        await refreshRewards();
-        await refreshUser();
+        queryClient.invalidateQueries({ queryKey: ['rewards', user?.id] });
+        queryClient.invalidateQueries({ queryKey: ['user'] });
       }
     } catch (error: any) {
       if (error?.response?.status === 404) {
@@ -83,8 +84,8 @@ const Store = () => {
       if (response.status === 204) {
         toast.success(`${avatar.title} adquirido!`, { description: ` -${avatar?.price} moedas` });
 
-        await refreshAvatars();
-        await refreshUser();
+        queryClient.invalidateQueries({ queryKey: ['avatars', user?.id] });
+        queryClient.invalidateQueries({ queryKey: ['user'] });
       }
     } catch (error: any) {
       if (error?.response?.status === 404) {
@@ -101,7 +102,7 @@ const Store = () => {
   };
 
   const handleEquipCosmetic = async (avatar: AvatarResponse) => {
-    if (user && user.currentAvatarName !== avatar.icon) {
+    if (user && user.currentAvatar !== avatar.icon) {
       try {
         const response = await selectAvatar(avatar.icon);
         if (response.status === 204) {
@@ -142,68 +143,85 @@ const Store = () => {
       </div>
 
       <div className="mb-6">
-        <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+        <h3
+          className="h--10 text-sm font-bold mb-3 flex items-center gap-2 cursor-pointer rounded-lg p-1 hover:bg-gray-500/10 transition-all"
+          onClick={() => setIsAvailableOpen(!isAvailableOpen)}
+        >
+          <ChevronDown className={`w-5 h-5 ml-1 transition-transform duration-300 ${isAvailableOpen && "-rotate-90"}`} />
           <ShoppingBag className="w-4 h-4 text-(--primary)" />
           Disponíveis ({availableRewards.length})
         </h3>
-        <div className="grid md:grid-cols-4 gap-4">
-          {availableRewards.map((reward) => (
-            <Card
-              key={reward.id}
-              className={`border-2 transition-all
-                ${reward.status === "EXPENSIVE"
-                  ? 'hover:border-(--primary)/30 opacity-60'
-                  : 'border-(--primary)/30 hover:border-(--primary)'
-                }`}
-            >
-              <div className="flex items-start gap-2 mb-3">
-                <Gift className="w-5 h-5 text-(--primary)" />
-                <div className="flex-1">
-                  <h4 className="text-sm font-bold">{reward.title}</h4>
-                  <p className="text-xs ">{reward.description}</p>
+        <div className={clsx(
+          "transition-all duration-300 ease-in-out origin-top",
+          isAvailableOpen
+            ? "opacity-100 translate-y-0 h-auto"
+            : "opacity-0 -translate-y-4 h-0 overflow-hidden pointer-events-none"
+        )}>
+          <div className="grid md:grid-cols-4 gap-4">
+            {availableRewards.map((reward) => (
+              <Card
+                key={reward.id}
+                className={`border-2 transition-all border-(--primary)/30 hover:border-(--primary)
+                ${reward.status === "AVAILABLE" && "animate-pulse"}`}
+              >
+                <div className="flex items-start gap-2 mb-3">
+                  <Gift className="w-5 h-5 text-(--primary)" />
+                  <div className="flex-1">
+                    <h4 className="text-sm font-bold">{reward.title}</h4>
+                    <p className="text-xs ">{reward.description}</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <Coins className="w-4 h-4 text-(--secondary)" />
-                  <span className="text-lg font-bold">{reward.price}</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Coins className="w-4 h-4 text-(--secondary)" />
+                    <span className="text-lg font-bold">{reward.price}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      disabled={reward.status === "EXPENSIVE"}
+                      onClick={() => handleClaim(reward.id)}
+                      className="text-xs px-4"
+                    >
+                      {reward.status !== "EXPENSIVE" ? "Resgatar" : "$$$"}
+                    </Button>
+                    <Button
+                      onClick={() => toggleEdit(reward.id)}
+                      className="text-xs px-4"
+                    >
+                      <Pencil />
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    disabled={reward.status === "EXPENSIVE"}
-                    onClick={() => handleClaim(reward.id)}
-                    className="text-xs px-4"
-                  >
-                    {reward.status !== "EXPENSIVE" ? "Resgatar" : "$$$"}
-                  </Button>
-                  <Button
-                    onClick={() => toggleEdit(reward.id)}
-                    className="text-xs px-4"
-                  >
-                    <Pencil />
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-        {availableRewards.length === 0 && (
-          <div className="grid gap-3">
-            <Card className="p-8 border-2 border-dashed text-center ">
-              <p className="text-sm">Nenhuma recompensa disponível</p>
-            </Card>
+              </Card>
+            ))}
           </div>
-        )}
+          {availableRewards.length === 0 && (
+            <div className="grid gap-3">
+              <Card className="p-8 border-2 border-dashed text-center ">
+                <p className="text-sm">Nenhuma recompensa disponível</p>
+              </Card>
+            </div>
+          )}
+        </div>
       </div>
 
       {claimedRewards.length > 0 && (
         <div className="mb-6">
-          <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+          <h3
+            className="h-10 text-sm font-bold mb-3 flex items-center gap-2 cursor-pointer rounded-lg p-1 hover:bg-gray-500/10 transition-all"
+            onClick={() => setIsClaimedOpen(!isClaimedOpen)}
+          >
+            <ChevronDown className={`w-5 h-5 ml-1 transition-transform duration-300 ${isClaimedOpen && "-rotate-90"}`} />
             <Sparkles className="w-4 h-4 text-(--secondary)" />
             Resgatadas ({claimedRewards.length})
           </h3>
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className={clsx(
+            "grid md:grid-cols-4 gap-4 transition-all duration-300 ease-in-out origin-top",
+            isClaimedOpen
+              ? "opacity-100 translate-y-0 h-auto"
+              : "opacity-0 -translate-y-4 h-0 overflow-hidden pointer-events-none"
+          )}>
             {claimedRewards.map((reward) => (
               <Card key={reward.id} className="border-2 border-(--secondary)/30">
                 <div className="flex items-start gap-2 mb-3 opacity-60">
@@ -239,7 +257,7 @@ const Store = () => {
                 className={`flex items-center justify-between p-2 border-2 transition-all
                   bg-background rounded-lg
                   ${avatar.owned
-                    ? (avatar.icon === user?.currentAvatarName
+                    ? (avatar.icon === user?.currentAvatar
                       ? 'border-(--secondary)/30'
                       : 'border-(--primary)/30')
                     : 'border-background'
@@ -271,7 +289,7 @@ const Store = () => {
                     variant="outline"
                     className="text-xs h-7"
                     onClick={() => handleEquipCosmetic(avatar)}
-                    disabled={avatar.icon === user?.currentAvatarName}
+                    disabled={avatar.icon === user?.currentAvatar}
                   >
                     Equipar
                   </Button>
@@ -287,7 +305,7 @@ const Store = () => {
         formType={formType}
         reward={targetReward}
       />
-    </div>
+    </div >
   );
 };
 

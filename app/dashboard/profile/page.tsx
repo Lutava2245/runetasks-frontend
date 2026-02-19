@@ -5,8 +5,8 @@ import Button from "@/src/components/ui/Button";
 import Card from "@/src/components/ui/Card";
 import FormField from "@/src/components/ui/FormField";
 import { useAuth } from "@/src/contexts/AuthContext";
-import { useSkills } from "@/src/contexts/SkillContext";
-import { useTasks } from "@/src/contexts/TaskContext";
+import useSkills from "@/src/hooks/useSkills";
+import useTasks from "@/src/hooks/useTasks";
 import { changePassword, updateUser } from "@/src/services/userService";
 import { ChangePasswordRequest, UserUpdateRequest } from "@/src/types/user";
 import { formatDate } from "@/src/utils/date";
@@ -17,11 +17,11 @@ import { toast } from "sonner";
 
 const Profile = () => {
   const { user, refreshUser } = useAuth();
-  const { tasks } = useTasks();
-  const { skills } = useSkills();
+  const { data: tasks = [], isLoading: loadingTasks } = useTasks();
+  const { data: skills = [], isLoading: loadingSkills} = useSkills();
 
   const [name, setName] = useState(user?.name || "");
-  const [currentPassword, setCurrentPassword] = useState("")
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -43,7 +43,7 @@ const Profile = () => {
           if (response.status === 204) {
             toast.success("A senha foi alterada com sucesso.");
 
-            await refreshUser();
+            refreshUser();
           }
         } catch (error: any) {
           if (error?.response?.status === 400) {
@@ -91,7 +91,7 @@ const Profile = () => {
         <div className="space-y-4">
           <Card className="border-2 hover:border-(--primary)/30 text-center transition-all">
             <div className="w-20 h-20 mx-auto mb-3 text-5xl flex items-center justify-center border-2 transition-transform bg-background border-(--primary) rounded-lg">
-              {getAvatarIcon(user && user.currentAvatarIcon)}
+              {getAvatarIcon(user && user.currentAvatar)}
             </div>
             <h3 className="text-sm font-bold items-center mb-1">{user?.nickname}</h3>
             <p className="text-xs mb-2">{user?.email}</p>
