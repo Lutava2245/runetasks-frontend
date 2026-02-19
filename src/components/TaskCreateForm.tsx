@@ -6,18 +6,20 @@ import Select from "./ui/Select";
 import Slider from "./ui/Slider";
 import { TaskCreateRequest } from "../types/task";
 import { registerTask } from "../services/taskService";
-import { useTasks } from "../contexts/TaskContext";
-import { useSkills } from "../contexts/SkillContext";
 import { DatePicker } from "./ui/DatePicker";
 import { getDateString } from "../utils/date";
+import useSkills from "../hooks/useSkills";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../contexts/AuthContext";
 
 interface TaskCreateFormProps {
   onClose: () => void;
 }
 
 export default function TaskCreateForm({ onClose }: TaskCreateFormProps) {
-  const { refreshTasks } = useTasks();
-  const { skills } = useSkills();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { data: skills = [], isLoading: loadingSkills} = useSkills();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [skillName, setSkillName] = useState("");
@@ -73,7 +75,8 @@ export default function TaskCreateForm({ onClose }: TaskCreateFormProps) {
       const response = await registerTask(newTask);
       if (response.status === 201) {
         toast.success("Tarefa criada com sucesso!");
-        await refreshTasks();
+        queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });
+        queryClient.invalidateQueries({ queryKey: ['skills', user?.id] });
 
         onClose();
       }

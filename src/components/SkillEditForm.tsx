@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { useSkills } from "../contexts/SkillContext";
-import { registerSkill, editSkill } from "../services/skillService";
+import { editSkill } from "../services/skillService";
 import { SkillRequest, SkillResponse } from "../types/skill";
-import FormField from "./ui/FormField";
-import Select from "./ui/Select";
 import Button from "./ui/Button";
+import FormField from "./ui/FormField";
 import { Users, Briefcase, GraduationCap, Home, Heart, Dumbbell, Landmark, ShoppingBag, Plane, Lightbulb } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../contexts/AuthContext";
 
 interface SkillEditFormProps {
   onClose: () => void;
@@ -14,7 +14,8 @@ interface SkillEditFormProps {
 }
 
 export default function SkillEditForm({ onClose, skill }: SkillEditFormProps) {
-  const { refreshSkills } = useSkills();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [name, setName] = useState(skill.name);
   const [icon, setIcon] = useState(skill.icon);
 
@@ -44,7 +45,7 @@ export default function SkillEditForm({ onClose, skill }: SkillEditFormProps) {
       const response = await editSkill(newSkill, skill.id);
       if (response.status === 204) {
         toast.success("Habilidade salva com sucesso!");
-        await refreshSkills();
+        queryClient.invalidateQueries({ queryKey: ['skills', user?.id] });
 
         onClose();
       }

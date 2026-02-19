@@ -4,32 +4,33 @@ import Badge from "@/src/components/ui/Badge";
 import Button from "@/src/components/ui/Button";
 import Card from "@/src/components/ui/Card";
 import TaskModal from "@/src/components/TaskModal";
-import { useTasks } from "@/src/contexts/TaskContext";
 import { completeTask, blockTask, deleteTask } from "@/src/services/taskService";
 import { TaskResponse } from "@/src/types/task";
-import { Circle, Lock, Unlock, CheckCircle, Trash2, Pencil, Check } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Circle, Lock, Unlock, CheckCircle, Trash2, Pencil, Check, ChevronDown, ChevronRight } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { formatDate } from "@/src/utils/date";
 import { useAuth } from "@/src/contexts/AuthContext";
-import { useSkills } from "@/src/contexts/SkillContext";
 import Link from "next/link";
+import useTasks from "@/src/hooks/useTasks";
+import useSkills from "@/src/hooks/useSkills";
+import { useQueryClient } from "@tanstack/react-query";
+import clsx from "clsx";
 
 const Tasks = () => {
-  const { tasks, refreshTasks } = useTasks();
-  const { skills } = useSkills();
-  const { refreshUser } = useAuth();
+  const queryClient = useQueryClient();
+  const { data: tasks = [] } = useTasks();
+  const { data: skills = [] } = useSkills();
+  const { user, refreshUser } = useAuth();
 
-  const [pendingTasks, setPendingTasks] = useState<TaskResponse[]>(() => tasks.filter(t => t.status !== "COMPLETED"));
-  const [completedTasks, setCompletedTasks] = useState<TaskResponse[]>(() => tasks.filter(t => t.status === "COMPLETED"));
+  const pendingTasks = tasks.filter(t => t.status !== "COMPLETED");
+  const completedTasks = tasks.filter(t => t.status === "COMPLETED");
+
+  const [isPendingOpen, setIsPendingOpen] = useState(true);
+  const [isCompletedOpen, setIsCompletedOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formType, setFormType] = useState("");
   const [targetTask, setTargetTask] = useState<TaskResponse | null>(null);
-
-  useEffect(() => {
-    setPendingTasks(tasks.filter(t => t.status !== "COMPLETED"));
-    setCompletedTasks(tasks.filter(t => t.status === "COMPLETED"));
-  }, [tasks])
 
   const handleComplete = async (taskId: number) => {
     const task = tasks.find(t => t.id === taskId);
@@ -40,8 +41,11 @@ const Tasks = () => {
     try {
       const response = await completeTask(taskId);
       if (response.status === 204) {
-        await refreshTasks();
-        await refreshUser();
+        queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });
+        queryClient.invalidateQueries({ queryKey: ['skills', user?.id] });
+        queryClient.invalidateQueries({ queryKey: ['rewards', user?.id] });
+        queryClient.invalidateQueries({ queryKey: ['avatars', user?.id] });
+        refreshUser();
 
         toast.success('Tarefa concluída!', { description: `+${task?.taskXp || 0} Xp` });
       }
@@ -63,7 +67,7 @@ const Tasks = () => {
     try {
       const response = await blockTask(taskId);
       if (response.status === 204) {
-        await refreshTasks();
+        queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });
 
         toast.info(task?.status === "BLOCKED" ? "Tarefa desbloqueada" : "Tarefa bloqueada");
       }
@@ -96,7 +100,7 @@ const Tasks = () => {
       const response = await deleteTask(taskId);
       if (response.status === 204) {
         toast.info("Tarefa excluída");
-        await refreshTasks();
+        queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });
       }
     } catch (error: any) {
       if (error?.response?.status === 404) {
@@ -127,11 +131,20 @@ const Tasks = () => {
       </div>
 
       <div className="mb-6">
-        <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+        <h3
+          className="h-10 text-sm font-bold mb-3 flex items-center gap-2 cursor-pointer rounded-lg p-1 hover:bg-gray-500/10 transition-all"
+          onClick={() => setIsPendingOpen(!isPendingOpen)}
+        >
+          <ChevronDown className={`w-5 h-5 ml-1 transition-transform duration-300 ${isPendingOpen && "-rotate-90"}`} />
           <Circle className="w-4 h-4 text-(--primary)" />
           Pendentes ({pendingTasks.length})
         </h3>
-        <div className="grid gap-3">
+        <div className={clsx(
+          "grid gap-3 transition-all duration-300 ease-in-out origin-top",
+          isPendingOpen
+            ? "opacity-100 translate-y-0 h-auto"
+            : "opacity-0 -translate-y-4 h-0 overflow-hidden pointer-events-none"
+        )}>
           {pendingTasks.map((task) => (
             <Card key={task.id} className="border-2 hover:border-(--primary)/30 transition-all flex flex-col md:flex-row md:justify-between">
               <div className="flex flex-col md:items-start mb-4 md:mb-0">
@@ -200,11 +213,20 @@ const Tasks = () => {
 
       {completedTasks.length > 0 && (
         <div>
-          <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+          <h3
+            className="h-10 text-sm font-bold mb-3 flex items-center gap-2 cursor-pointer rounded-lg p-1 hover:bg-gray-500/10 transition-all"
+            onClick={() => setIsCompletedOpen(!isCompletedOpen)}
+          >
+            <ChevronDown className={`w-5 h-5 ml-1 transition-transform duration-300 ${isCompletedOpen && "-rotate-90"}`} />
             <CheckCircle className="w-4 h-4 text-(--primary)" />
             Concluídas ({completedTasks.length})
           </h3>
-          <div className="grid gap-3">
+          <div className={clsx(
+            "grid gap-3 transition-all duration-300 ease-in-out origin-top",
+            isCompletedOpen
+              ? "opacity-100 translate-y-0 h-auto"
+              : "opacity-0 -translate-y-4 h-0 overflow-hidden pointer-events-none"
+          )}>
             {completedTasks.map((task) => (
               <Card key={task.id} className="border-2 flex flex-col md:flex-row md:justify-between">
                 <div className="flex flex-col md:items-start mb-4 md:mb-0 opacity-60">

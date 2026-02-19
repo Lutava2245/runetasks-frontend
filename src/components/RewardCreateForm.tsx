@@ -2,17 +2,19 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { registerReward } from "../services/rewardService";
 import { RewardCreateRequest } from "../types/reward";
-import { useRewards } from "../contexts/RewardContext";
 import FormField from "./ui/FormField";
 import Slider from "./ui/Slider";
 import Button from "./ui/Button";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../contexts/AuthContext";
 
 interface RewardCreateFormProps {
   onClose: () => void;
 }
 
 export default function RewardCreateForm({ onClose }: RewardCreateFormProps) {
-  const { refreshRewards } = useRewards();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [likeLevel, setLikeLevel] = useState(1);
@@ -49,8 +51,7 @@ export default function RewardCreateForm({ onClose }: RewardCreateFormProps) {
       const response = await registerReward(newReward);
       if (response.status === 201) {
         toast.success("Recompensa criada com sucesso!");
-        await refreshRewards();
-
+        queryClient.invalidateQueries({ queryKey: ['rewards', user?.id] });
         onClose();
       }
     } catch (error: any) {

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useRewards } from "../contexts/RewardContext";
 import { RewardEditRequest, RewardResponse } from "../types/reward";
 import { toast } from "sonner";
 import { editReward } from "../services/rewardService";
 import FormField from "./ui/FormField";
 import Button from "./ui/Button";
+import { useAuth } from "../contexts/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface RewardEditFormProps {
   onClose: () => void;
@@ -12,7 +13,9 @@ interface RewardEditFormProps {
 }
 
 export default function RewardEditForm({ onClose, reward }: RewardEditFormProps) {
-  const { refreshRewards } = useRewards();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
   const [title, setTitle] = useState(reward.title);
   const [description, setDescription] = useState(reward.description);
 
@@ -29,7 +32,7 @@ export default function RewardEditForm({ onClose, reward }: RewardEditFormProps)
       const response = await editReward(newReward, reward.id);
       if (response.status === 204) {
         toast.success("Recompensa salva com sucesso!");
-        await refreshRewards();
+        queryClient.invalidateQueries({ queryKey: ['rewards', user?.id] });
 
         onClose();
       }

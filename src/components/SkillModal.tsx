@@ -4,10 +4,10 @@ import SkillCreateForm from "./SkillCreateForm";
 import SkillEditForm from "./SkillEditForm";
 import { SkillResponse } from "../types/skill";
 import { deleteSkill } from "../services/skillService";
-import { useSkills } from "../contexts/SkillContext";
 import { toast } from "sonner";
-import { useTasks } from "../contexts/TaskContext";
 import Card from "./ui/Card";
+import { useAuth } from "../contexts/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface SkillModalProps {
   isOpen: boolean;
@@ -17,8 +17,8 @@ interface SkillModalProps {
 }
 
 export default function SkillModal({ isOpen, onClose, formType, skill }: SkillModalProps) {
-  const { refreshSkills } = useSkills();
-  const { refreshTasks } = useTasks();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const handleDeleteSkill = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,9 +27,8 @@ export default function SkillModal({ isOpen, onClose, formType, skill }: SkillMo
         const response = await deleteSkill(skill.id);
         if (response.status === 204) {
           toast.info("Habilidade excluída");
-          await refreshSkills();
-          await refreshTasks();
-
+          queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });
+          queryClient.invalidateQueries({ queryKey: ['skills', user?.id] });
           onClose();
         }
       } catch (error: any) {

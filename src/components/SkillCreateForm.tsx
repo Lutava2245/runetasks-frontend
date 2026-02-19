@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { useSkills } from "../contexts/SkillContext";
 import { registerSkill } from "../services/skillService";
 import { SkillRequest } from "../types/skill";
 import Button from "./ui/Button";
 import FormField from "./ui/FormField";
 import { Users, Briefcase, GraduationCap, Home, Heart, Dumbbell, Landmark, ShoppingBag, Plane, Lightbulb } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../contexts/AuthContext";
 
 interface SkillCreateFormProps {
   onClose: () => void;
 }
 
 export default function SkillCreateForm({ onClose }: SkillCreateFormProps) {
-  const { refreshSkills } = useSkills();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");
 
@@ -42,7 +44,7 @@ export default function SkillCreateForm({ onClose }: SkillCreateFormProps) {
       const response = await registerSkill(newSkill);
       if (response.status === 201) {
         toast.success("Habilidade criada com sucesso!");
-        await refreshSkills();
+        queryClient.invalidateQueries({ queryKey: ['skills', user?.id] });
 
         onClose();
       }

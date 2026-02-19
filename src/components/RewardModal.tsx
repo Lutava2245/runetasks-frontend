@@ -1,7 +1,4 @@
-'use client';
-
 import Button from "./ui/Button";
-import { useRewards } from "../contexts/RewardContext";
 import { RewardResponse } from "../types/reward";
 import { toast } from "sonner";
 import Card from "./ui/Card";
@@ -9,6 +6,8 @@ import { X } from "lucide-react";
 import { deleteReward } from "../services/rewardService";
 import RewardCreateForm from "./RewardCreateForm";
 import RewardEditForm from "./RewardEditForm";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../contexts/AuthContext";
 
 interface RewardModalProps {
   isOpen: boolean;
@@ -18,7 +17,8 @@ interface RewardModalProps {
 }
 
 export default function RewardFormModal({ isOpen, onClose, formType, reward }: RewardModalProps) {
-  const { refreshRewards } = useRewards();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const handleDeleteReward = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +27,7 @@ export default function RewardFormModal({ isOpen, onClose, formType, reward }: R
         const response = await deleteReward(reward.id);
         if (response.status === 204) {
           toast.info("Recompensa excluída");
-          await refreshRewards();
+          queryClient.invalidateQueries({ queryKey: ['rewards', user?.id] });
 
           onClose();
         }

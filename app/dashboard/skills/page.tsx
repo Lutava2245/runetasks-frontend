@@ -5,27 +5,21 @@ import Button from "@/src/components/ui/Button";
 import Card from "@/src/components/ui/Card";
 import Progress from "@/src/components/ui/Progress";
 import SkillModal from "@/src/components/SkillModal";
-import { useSkills } from "@/src/contexts/SkillContext";
-import { useTasks } from "@/src/contexts/TaskContext";
 import { SkillResponse } from "@/src/types/skill";
-import { TaskResponse } from "@/src/types/task";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Briefcase, Dumbbell, GraduationCap, Heart, Home, Landmark, Lightbulb, Plane, ShoppingBag, Users } from "lucide-react";
+import useSkills from "@/src/hooks/useSkills";
+import useTasks from "@/src/hooks/useTasks";
 
 const Skills = () => {
-  const { skills, refreshSkills } = useSkills();
-  const { tasks } = useTasks();
+  const { data: skills = [], isLoading: loadingSkills} = useSkills();
+  const { data: tasks = [], isLoading: loadingTasks } = useTasks();
 
-  const [completedTasks, setCompletedTasks] = useState<TaskResponse[]>(() => tasks.filter(t => t.status === "completed"));
+  const completedTasks = tasks.filter(t => t.status === "COMPLETED");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formType, setFormType] = useState("");
   const [targetSkill, setTargetSkill] = useState<SkillResponse | null>(null);
-
-  useEffect(() => {
-    setCompletedTasks(tasks.filter(t => t.status === "COMPLETED"));
-    refreshSkills();
-  }, [tasks])
-
 
   const getSkillIcon = (skill: SkillResponse) => {
     switch (skill.icon) {
