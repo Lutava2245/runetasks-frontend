@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/src/contexts/AuthContext";
 import { Toaster } from "sonner";
 import { AlertCircle, Ban, CheckCircle2, Info } from "lucide-react";
+import ReactQueryProvider from "@/src/providers/ReactQueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +31,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <ReactQueryProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </ReactQueryProvider>
         <Toaster
           toastOptions={{
             classNames: {
