@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import clsx from "clsx";
 import { useIsLargeScreen } from "@/src/hooks/useMediaQuery";
+import { LevelUpWatcher } from "@/src/components/LevelUpWatcher";
 
 export default function DashboardLayout({ children }: Readonly<{
   children: React.ReactNode;
@@ -91,6 +92,7 @@ export default function DashboardLayout({ children }: Readonly<{
           </div>
         </div>
       )}
+      <LevelUpWatcher/>
     </div>
   )
 };
