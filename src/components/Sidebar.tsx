@@ -1,5 +1,3 @@
-'use client';
-
 import { useAuth } from '@/src/contexts/AuthContext';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

@@ -54,7 +54,7 @@ const Tasks = () => {
         const difficulty = task?.taskXp === 20 ? "fácil" : (task?.taskXp === 30 ? "mediana" : "difícil");
         setCelebrationData({
           title: "Tarefa Concluída!",
-          desc: `Concluíu uma tarefa ${difficulty}. Você ganhou +${task?.taskXp || 0} de XP e +${(task?.taskXp || 0) / 2} moedas!`
+          desc: `Concluiu uma tarefa ${difficulty}. Você ganhou +${task?.taskXp || 0} de XP e +${(task?.taskXp || 0) / 2} moedas!`
         });
         setShowVictory(true);
       }

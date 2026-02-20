@@ -68,7 +68,7 @@ export default function SkillCreateForm({ onClose }: SkillCreateFormProps) {
       <div>
         <label
           htmlFor="icon"
-          className={`text-sm font-medium`}
+          className={`text-md font-medium`}
         >
           Ícone da Habilidade
         </label>

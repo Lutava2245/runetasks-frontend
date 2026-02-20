@@ -156,7 +156,7 @@ const Store = () => {
 
       <div className="mb-6">
         <h3
-          className="h--10 text-sm font-bold mb-3 flex items-center gap-2 cursor-pointer rounded-lg p-1 hover:bg-gray-500/10 transition-all"
+          className="h-10 text-sm font-bold mb-3 flex items-center gap-2 cursor-pointer rounded-lg p-1 hover:bg-gray-500/10 transition-all"
           onClick={() => setIsAvailableOpen(!isAvailableOpen)}
         >
           <ChevronDown className={`w-5 h-5 ml-1 transition-transform duration-300 ${isAvailableOpen && "-rotate-90"}`} />
@@ -257,7 +257,7 @@ const Store = () => {
 
       <Card className="border-2 border-(--secondary)/30 hover:border-(--secondary) transition-all">
         <h3 className="text-sm font-bold mb-3 text-(--secondary)">Loja de Cosméticos</h3>
-        <div className="space-y-2 max-h-64 overflow-y-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto">
           {avatars.sort((a, b) => {
             if (a.owned === b.owned) return 0;
             if (a.owned) return -1;
@@ -275,8 +275,8 @@ const Store = () => {
                     : 'border-background'
                   }`}
               >
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="text-2xl">{getAvatarIcon(avatar.icon)}</span>
+                <div className="flex items-center text-center gap-2 text-xs md:text-lg">
+                  <span className="text-3xl">{getAvatarIcon(avatar.icon)}</span>
                   <p className="font-bold">{avatar.title}</p>
                 </div>
 

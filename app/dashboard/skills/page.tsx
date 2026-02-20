@@ -12,8 +12,8 @@ import useSkills from "@/src/hooks/useSkills";
 import useTasks from "@/src/hooks/useTasks";
 
 const Skills = () => {
-  const { data: skills = [], isLoading: loadingSkills} = useSkills();
-  const { data: tasks = [], isLoading: loadingTasks } = useTasks();
+  const { data: skills = [] } = useSkills();
+  const { data: tasks = [] } = useTasks();
 
   const completedTasks = tasks.filter(t => t.status === "COMPLETED");
 
@@ -114,7 +114,7 @@ const Skills = () => {
               <Card
                 key={skill.id}
                 onClick={() => toggleEdit(skill.id)}
-                className="border-2 border-(--primary) hover:border-foreground hover:scale-105 transition-all flex justify-center items-center"
+                className="border-2 border-(--primary) hover:border-(--secondary) hover:scale-105 transition-all flex justify-center items-center"
               >
                 <div className="flex items-center justify-center border transition-transform bg-background border-(--primary) rounded-xl p-2 mr-3">
                   {getSkillIcon(skill)}

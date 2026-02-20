@@ -17,8 +17,8 @@ import { toast } from "sonner";
 
 const Profile = () => {
   const { user, refreshUser } = useAuth();
-  const { data: tasks = [], isLoading: loadingTasks } = useTasks();
-  const { data: skills = [], isLoading: loadingSkills} = useSkills();
+  const { data: tasks = [] } = useTasks();
+  const { data: skills = []} = useSkills();
 
   const [name, setName] = useState(user?.name || "");
   const [currentPassword, setCurrentPassword] = useState("");

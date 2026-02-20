@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import Button from './ui/Button';

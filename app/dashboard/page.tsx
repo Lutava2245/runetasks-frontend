@@ -19,9 +19,9 @@ import { toast } from "sonner";
 
 export default function Dashboard() {
   const { user, refreshUser } = useAuth();
-  const { data: tasks = [], isLoading: loadingTasks } = useTasks();
-  const { data: skills = [], isLoading: loadingSkills } = useSkills();
-  const { data: avatars = [], isLoading: loadingAvatars } = useAvatars();
+  const { data: tasks = [] } = useTasks();
+  const { data: skills = [] } = useSkills();
+  const { data: avatars = [] } = useAvatars();
 
   const ownedAvatars = avatars.filter(a => a.owned);
 

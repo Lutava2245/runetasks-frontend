@@ -19,7 +19,7 @@ interface TaskCreateFormProps {
 export default function TaskCreateForm({ onClose }: TaskCreateFormProps) {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { data: skills = [], isLoading: loadingSkills} = useSkills();
+  const { data: skills = [] } = useSkills();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [skillName, setSkillName] = useState("");
