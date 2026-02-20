@@ -17,6 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import useRewards from "@/src/hooks/useRewards";
 import useAvatars from "@/src/hooks/useAvatars";
 import clsx from "clsx";
+import { CelebrationModal } from "@/src/components/ui/CelebrationModal";
 
 const Store = () => {
   const queryClient = useQueryClient();
@@ -32,6 +33,9 @@ const Store = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formType, setFormType] = useState("");
   const [targetReward, setTargetReward] = useState<RewardResponse | null>(null);
+
+  const [showVictory, setShowVictory] = useState(false);
+  const [celebrationData, setCelebrationData] = useState({ title: '', desc: '' });
 
   const toggleCreate = () => {
     setFormType("create");
@@ -54,10 +58,14 @@ const Store = () => {
     try {
       const response = await buyReward(rewardId);
       if (response.status === 204) {
-        toast.success(`Recompensa resgatada!`, { description: ` -${reward?.price} moedas` });
-
         queryClient.invalidateQueries({ queryKey: ['rewards', user?.id] });
         queryClient.invalidateQueries({ queryKey: ['user'] });
+
+        setCelebrationData({
+          title: "Recompensa Resgatada!",
+          desc: `Parabéns pela recompensa! Você gastou ${reward?.price} moedas.`
+        });
+        setShowVictory(true);
       }
     } catch (error: any) {
       if (error?.response?.status === 404) {
@@ -82,10 +90,14 @@ const Store = () => {
     try {
       const response = await buyAvatar(avatar.id);
       if (response.status === 204) {
-        toast.success(`${avatar.title} adquirido!`, { description: ` -${avatar?.price} moedas` });
-
         queryClient.invalidateQueries({ queryKey: ['avatars', user?.id] });
         queryClient.invalidateQueries({ queryKey: ['user'] });
+
+        setCelebrationData({
+          title: `Novo avatar: ${getAvatarIcon(avatar.icon)}`,
+          desc: `Você comprou o avatar ${avatar.title}! Ele custou ${avatar?.price} moedas.`
+        });
+        setShowVictory(true);
       }
     } catch (error: any) {
       if (error?.response?.status === 404) {
@@ -108,7 +120,7 @@ const Store = () => {
         if (response.status === 204) {
           toast.success('Avatar atualizado!')
 
-          await refreshUser();
+          refreshUser();
         }
       } catch (error: any) {
         if (error?.response?.status === 404) {
@@ -304,6 +316,12 @@ const Store = () => {
         onClose={() => setIsModalOpen(false)}
         formType={formType}
         reward={targetReward}
+      />
+      <CelebrationModal
+        isOpen={showVictory}
+        onClose={() => setShowVictory(false)}
+        title={celebrationData.title}
+        description={celebrationData.desc}
       />
     </div >
   );

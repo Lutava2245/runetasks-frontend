@@ -16,6 +16,7 @@ import useTasks from "@/src/hooks/useTasks";
 import useSkills from "@/src/hooks/useSkills";
 import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
+import { CelebrationModal } from "@/src/components/ui/CelebrationModal";
 
 const Tasks = () => {
   const queryClient = useQueryClient();
@@ -32,6 +33,9 @@ const Tasks = () => {
   const [formType, setFormType] = useState("");
   const [targetTask, setTargetTask] = useState<TaskResponse | null>(null);
 
+  const [showVictory, setShowVictory] = useState(false);
+  const [celebrationData, setCelebrationData] = useState({ title: '', desc: '' });
+
   const handleComplete = async (taskId: number) => {
     const task = tasks.find(t => t.id === taskId);
     if (task?.status === "COMPLETED") {
@@ -47,7 +51,12 @@ const Tasks = () => {
         queryClient.invalidateQueries({ queryKey: ['avatars', user?.id] });
         refreshUser();
 
-        toast.success('Tarefa concluída!', { description: `+${task?.taskXp || 0} Xp` });
+        const difficulty = task?.taskXp === 20 ? "fácil" : (task?.taskXp === 30 ? "mediana" : "difícil");
+        setCelebrationData({
+          title: "Tarefa Concluída!",
+          desc: `Concluíu uma tarefa ${difficulty}. Você ganhou +${task?.taskXp || 0} de XP e +${(task?.taskXp || 0) / 2} moedas!`
+        });
+        setShowVictory(true);
       }
     } catch (error: any) {
       if (error?.response?.status === 404) {
@@ -218,7 +227,7 @@ const Tasks = () => {
             onClick={() => setIsCompletedOpen(!isCompletedOpen)}
           >
             <ChevronDown className={`w-5 h-5 ml-1 transition-transform duration-300 ${isCompletedOpen && "-rotate-90"}`} />
-            <CheckCircle className="w-4 h-4 text-(--primary)" />
+            <CheckCircle className="w-4 h-4 text-(--secondary)" />
             Concluídas ({completedTasks.length})
           </h3>
           <div className={clsx(
@@ -261,6 +270,12 @@ const Tasks = () => {
         onClose={() => setIsModalOpen(false)}
         formType={formType}
         task={targetTask}
+      />
+      <CelebrationModal
+        isOpen={showVictory}
+        onClose={() => setShowVictory(false)}
+        title={celebrationData.title}
+        description={celebrationData.desc}
       />
     </div>
   );
