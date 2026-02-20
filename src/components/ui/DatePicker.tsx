@@ -15,10 +15,10 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     };
 
     return (
-      <div>
+      <div className='mb-3 flex flex-col gap-1.5'>
         <label
           htmlFor={id}
-          className="text-sm font-bold mb-1 block"
+          className="text-md font-medium"
         >
           {label}
         </label>
@@ -29,9 +29,10 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           type="date"
           onChange={handleChange}
           className={`
-            flex-1 p-3 w-full border appearance-none
-            border-foreground text-sm
-            rounded-lg focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-(--primary)
+            flex-1 p-1 w-full border-b-2 rounded-t-lg
+            bg-background/30
+            focus:outline-none focus:border-(--primary) transition-all
+            text-sm
           `}
           {...props}
         />

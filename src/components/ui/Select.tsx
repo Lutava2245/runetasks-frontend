@@ -31,10 +31,10 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     };
 
     return (
-      <div className="relative">
+      <div className="mb-3 flex flex-col gap-1.5">
         <label
           htmlFor={id}
-          className="text-sm font-bold mb-1 block"
+          className="text-md font-medium block"
         >
           {label}
         </label>
@@ -45,10 +45,10 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           value={value}
           onChange={handleChange}
           className={`
-            flex-1 p-3 w-full border appearance-none
-            border-foreground
-            rounded-lg focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-(--primary)
-            placeholder-foreground/50 text-sm
+            flex-1 p-1 w-full border-b-2 rounded-t-lg
+            bg-background/30
+            focus:outline-none focus:border-(--primary) transition-all
+            text-sm
           `}
           {...props}
         >
@@ -65,10 +65,6 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             </option>
           ))}
         </select>
-
-        <div className="absolute inset-y-12 text-center right-0 flex items-center px-3 pointer-events-none">
-          <ChevronDown className='w-5 h-5'/>
-        </div>
       </div>
     );
   }

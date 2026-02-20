@@ -130,6 +130,7 @@ export default function TaskCreateForm({ onClose }: TaskCreateFormProps) {
       <Slider
         label="Dificuldade"
         value={difficulty}
+        badge={difficulty === 1 ? "20 XP" : (difficulty === 2 ? "40 XP" : "60 XP")}
         onChange={(e) => setDifficulty(Number(e.target.value))}
         max={3}
         min={1}

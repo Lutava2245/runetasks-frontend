@@ -23,7 +23,7 @@ const FormField = React.forwardRef<HTMLDivElement, FormProps>(
       <div ref={ref} className={`mb-3 flex flex-col gap-1.5`}>
         <label
           htmlFor={id}
-          className={`text-sm font-medium`}
+          className={`text-md font-medium`}
         >
           {label}
         </label>
@@ -37,9 +37,9 @@ const FormField = React.forwardRef<HTMLDivElement, FormProps>(
           onChange={onChange}
           required={required}
           className={`
-            flex-1 p-3 w-full border
-            border-foreground
-            rounded-lg focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-(--primary)
+            flex-1 p-1 w-full border-b-2 rounded-t-lg
+            bg-background/30
+            focus:outline-none focus:border-(--primary) transition-all
             placeholder-foreground/50 text-sm
           `}
           {...props}

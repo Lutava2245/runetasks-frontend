@@ -82,6 +82,7 @@ export default function RewardCreateForm({ onClose }: RewardCreateFormProps) {
       <Slider
         label="O quanto você gosta da recompensa?"
         value={likeLevel}
+        badge={likeLevel.toString()}
         onChange={(e) => setLikeLevel(Number(e.target.value))}
         max={5}
         min={1}
