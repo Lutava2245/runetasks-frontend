@@ -16,7 +16,7 @@ export default function SkillCreateForm({ onClose }: SkillCreateFormProps) {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [name, setName] = useState("");
-  const [icon, setIcon] = useState("");
+  const [iconName, setIconName] = useState("");
 
   const skillIcons = [
     { id: 1, value: "personal", title: "Pessoal", icon: <Users className="h-full w-full text-foreground" /> },
@@ -33,12 +33,12 @@ export default function SkillCreateForm({ onClose }: SkillCreateFormProps) {
 
   const handleCreateSkill = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !icon) {
+    if (!name || !iconName) {
       toast.info("Preencha os campos necessários para cadastrar");
       return;
     }
 
-    const newSkill: SkillRequest = { name, icon }
+    const newSkill: SkillRequest = { name, iconName }
 
     try {
       const response = await registerSkill(newSkill);
@@ -80,11 +80,11 @@ export default function SkillCreateForm({ onClose }: SkillCreateFormProps) {
               key={i.id}
               type="button"
               title={i.value}
-              onClick={() => setIcon(i.value)}
+              onClick={() => setIconName(i.value)}
               className={`
                 border-2 w-16 h-16 text-xl m-2
                 bg-background hover:bg-(--dark-primary)/25 hover:scale-120
-                ${icon === i.value
+                ${iconName === i.value
                   ? 'border-(--secondary) hover:border-(--secondary) hover:bg-(--secondary)/25'
                   : 'border-(--dark-primary) hover:border-(--primary)'
                 }

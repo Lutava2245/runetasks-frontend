@@ -17,7 +17,7 @@ export default function SkillEditForm({ onClose, skill }: SkillEditFormProps) {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [name, setName] = useState(skill.name);
-  const [icon, setIcon] = useState(skill.icon);
+  const [iconName, setIconName] = useState(skill.iconName);
 
   const skillIcons = [
     { id: 1, value: "personal", title: "Pessoal", icon: <Users className="h-full w-full text-foreground" /> },
@@ -34,12 +34,12 @@ export default function SkillEditForm({ onClose, skill }: SkillEditFormProps) {
 
   const handleSaveSkill = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !icon) {
+    if (!name || !iconName) {
       toast.info("Preencha os campos necessários para salvar");
       return;
     }
 
-    const newSkill: SkillRequest = { name, icon }
+    const newSkill: SkillRequest = { name, iconName }
 
     try {
       const response = await editSkill(newSkill, skill.id);
@@ -85,11 +85,11 @@ export default function SkillEditForm({ onClose, skill }: SkillEditFormProps) {
               key={i.id}
               type="button"
               title={i.value}
-              onClick={() => setIcon(i.value)}
+              onClick={() => setIconName(i.value)}
               className={`
                 border-2 w-16 h-16 text-xl m-2
                 bg-background hover:bg-(--dark-primary)/25 hover:scale-120
-                ${icon === i.value
+                ${iconName === i.value
                   ? 'border-(--secondary) hover:border-(--secondary) hover:bg-(--secondary)/25'
                   : 'border-(--dark-primary) hover:border-(--primary)'
                 }

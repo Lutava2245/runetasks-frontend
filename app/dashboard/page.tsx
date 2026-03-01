@@ -26,9 +26,9 @@ export default function Dashboard() {
   const ownedAvatars = avatars.filter(a => a.owned);
 
   const handleEquipCosmetic = async (avatar: AvatarResponse) => {
-    if (user && user.currentAvatar !== avatar.icon) {
+    if (user && user.currentAvatar !== avatar.iconName) {
       try {
-        const response = await selectAvatar(avatar.icon);
+        const response = await selectAvatar(avatar.iconName);
         if (response.status === 204) {
           toast.success('Avatar atualizado!')
           refreshUser();
@@ -215,12 +215,12 @@ export default function Dashboard() {
                   title={avatar.title}
                   className={`border-2 w-18 h-18 text-xl m-3
                     bg-background hover:bg-(--dark-primary)/25 hover:scale-120
-                    ${user?.currentAvatar === avatar.icon
+                    ${user?.currentAvatar === avatar.iconName
                       ? 'border-(--secondary) hover:border-(--secondary) hover:bg-(--secondary)/25'
                       : 'border-(--dark-primary) hover:border-(--primary)'
                     }`}
                 >
-                  {getAvatarIcon(avatar.icon)}
+                  {getAvatarIcon(avatar.iconName)}
                 </Button>
               ))}
             </div>

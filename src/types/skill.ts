@@ -1,7 +1,7 @@
 export interface SkillResponse {
   id: number
   name: string
-  icon: string
+  iconName: string
   level: number
   xpToNextLevel: number
   levelPercentage: number
@@ -12,5 +12,5 @@ export interface SkillResponse {
 
 export interface SkillRequest {
   name: string
-  icon: string
+  iconName: string
 }

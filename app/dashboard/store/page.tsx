@@ -94,7 +94,7 @@ const Store = () => {
         queryClient.invalidateQueries({ queryKey: ['user'] });
 
         setCelebrationData({
-          title: `Novo avatar: ${getAvatarIcon(avatar.icon)}`,
+          title: `Novo avatar: ${getAvatarIcon(avatar.iconName)}`,
           desc: `Você comprou o avatar ${avatar.title}! Ele custou ${avatar?.price} moedas.`
         });
         setShowVictory(true);
@@ -114,9 +114,9 @@ const Store = () => {
   };
 
   const handleEquipCosmetic = async (avatar: AvatarResponse) => {
-    if (user && user.currentAvatar !== avatar.icon) {
+    if (user && user.currentAvatar !== avatar.iconName) {
       try {
-        const response = await selectAvatar(avatar.icon);
+        const response = await selectAvatar(avatar.iconName);
         if (response.status === 204) {
           toast.success('Avatar atualizado!')
 
@@ -269,14 +269,14 @@ const Store = () => {
                 className={`flex items-center justify-between p-2 border-2 transition-all
                   bg-background rounded-lg
                   ${avatar.owned
-                    ? (avatar.icon === user?.currentAvatar
+                    ? (avatar.iconName === user?.currentAvatar
                       ? 'border-(--secondary)/30'
                       : 'border-(--primary)/30')
                     : 'border-background'
                   }`}
               >
                 <div className="flex items-center text-center gap-2 text-xs md:text-lg">
-                  <span className="text-3xl">{getAvatarIcon(avatar.icon)}</span>
+                  <span className="text-3xl">{getAvatarIcon(avatar.iconName)}</span>
                   <p className="font-bold">{avatar.title}</p>
                 </div>
 
@@ -301,7 +301,7 @@ const Store = () => {
                     variant="outline"
                     className="text-xs h-7"
                     onClick={() => handleEquipCosmetic(avatar)}
-                    disabled={avatar.icon === user?.currentAvatar}
+                    disabled={avatar.iconName === user?.currentAvatar}
                   >
                     Equipar
                   </Button>

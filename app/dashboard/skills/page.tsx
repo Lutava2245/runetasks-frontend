@@ -22,7 +22,7 @@ const Skills = () => {
   const [targetSkill, setTargetSkill] = useState<SkillResponse | null>(null);
 
   const getSkillIcon = (skill: SkillResponse) => {
-    switch (skill.icon) {
+    switch (skill.iconName) {
       case 'personal':
         return <Users className="h-20 w-20" />;
 
