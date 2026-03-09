@@ -6,7 +6,7 @@ import Card from "@/src/components/ui/Card";
 import TaskModal from "@/src/components/TaskModal";
 import { completeTask, blockTask, deleteTask } from "@/src/services/taskService";
 import { TaskResponse } from "@/src/types/task";
-import { Circle, Lock, Unlock, CheckCircle, Trash2, Pencil, Check, ChevronDown, ChevronRight } from "lucide-react";
+import { Circle, Lock, Unlock, CheckCircle, Trash2, Pencil, Check, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { formatDate } from "@/src/utils/date";
@@ -51,10 +51,10 @@ const Tasks = () => {
         queryClient.invalidateQueries({ queryKey: ['avatars', user?.id] });
         refreshUser();
 
-        const difficulty = task?.taskXp === 20 ? "fácil" : (task?.taskXp === 30 ? "mediana" : "difícil");
+        const difficulty = task?.taskXp === 20 ? "fácil" : (task?.taskXp === 40 ? "mediana" : "difícil");
         setCelebrationData({
           title: "Tarefa Concluída!",
-          desc: `Concluiu uma tarefa ${difficulty}. Você ganhou +${task?.taskXp || 0} de XP e +${(task?.taskXp || 0) / 2} moedas!`
+          desc: `Concluiu uma tarefa ${difficulty}. Você ganhou +${task?.taskXp || 0} de XP e +${task?.taskCoins || 0} moedas!`
         });
         setShowVictory(true);
       }
@@ -128,7 +128,7 @@ const Tasks = () => {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h2 className="text-2xl md:text-3xl font-bold mb-2">Tarefas</h2>
-          <p className="text-sm">Organize suas tarefas e ganhe XP</p>
+          <p className="text-sm">Organize suas tarefas</p>
         </div>
         <Button
           onClick={toggleCreate}
@@ -164,8 +164,8 @@ const Tasks = () => {
                   )}
                   <Badge className="text-xs">
                     {task.taskXp === 20 && "Fácil"}
-                    {task.taskXp === 30 && "Médio"}
-                    {task.taskXp === 50 && "Difícil"}
+                    {task.taskXp === 40 && "Médio"}
+                    {task.taskXp === 60 && "Difícil"}
                   </Badge>
                   <Badge className="border-(--secondary) text-(--secondary)">
                     {formatDate(task.date)}
@@ -208,13 +208,13 @@ const Tasks = () => {
           ))}
           {pendingTasks.length === 0 && (
             <Card className="p-8 border-2 border-dashed text-center ">
-              <p className="text-sm">Nenhuma tarefa pendente.
-                {skills.length !== 0
-                  ? <span onClick={toggleCreate} className="text-sm text-(--secondary) cursor-pointer"> Crie uma!</span>
-                  : <span className="text-sm text-(--secondary) cursor-pointer">
-                    <Link href={'/dashboard/skills'} className="text-sm text-(--secondary)"> Crie uma habilidade para começar!</Link>
-                  </span>
-                }</p>
+              <p className="text-sm">Nenhuma tarefa pendente.</p>
+              {skills.length !== 0
+                ? <span onClick={toggleCreate} className="text-sm text-(--secondary) cursor-pointer"> Crie uma!</span>
+                : <span className="text-sm text-(--secondary) cursor-pointer">
+                  <Link href={'/dashboard/skills'} className="text-sm text-(--secondary)"> Crie uma habilidade para começar!</Link>
+                </span>
+              }
             </Card>
           )}
         </div>

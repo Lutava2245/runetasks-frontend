@@ -137,7 +137,7 @@ const Store = () => {
     <div className="mx-auto px-6 py-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-2">Recompensas</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-2">Loja</h2>
           <p className=" text-sm">Resgate prêmios</p>
         </div>
         <div className="flex items-center gap-3">
@@ -299,7 +299,7 @@ const Store = () => {
                 {avatar.owned && (
                   <Button
                     variant="outline"
-                    className="text-xs h-7"
+                    className={`text-xs h-7 ${avatar.iconName === user?.currentAvatar && 'text-(--secondary) border-(--secondary)'}`}
                     onClick={() => handleEquipCosmetic(avatar)}
                     disabled={avatar.iconName === user?.currentAvatar}
                   >

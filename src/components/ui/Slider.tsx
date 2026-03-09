@@ -36,11 +36,21 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
               w-full h-2 cursor-pointer appearance-none
               bg-background/30 rounded-full transition-all
               focus:outline-none focus:bg-(--dark-primary)
+              [&::-webkit-slider-thumb]:appearance-none
+              [&::-webkit-slider-thumb]:bg-(--primary)
+              [&::-webkit-slider-thumb]:w-4
+              [&::-webkit-slider-thumb]:h-4
+              [&::-webkit-slider-thumb]:rounded-md
+              [&::-moz-range-thumb]:bg-(--primary)
+              [&::-moz-range-thumb]:w-4
+              [&::-moz-range-thumb]:h-4
+              [&::-moz-range-thumb]:rounded-md
+              [&::-moz-range-thumb]:border-0
             `}
             {...props}
           />
 
-          <Badge className="w-15 justify-center">{badge}</Badge>
+          <Badge className="w-16 justify-center">{badge}</Badge>
         </div>
       </div>
     );

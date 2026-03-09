@@ -26,7 +26,7 @@ export const LevelUpWatcher = () => {
     if (skills && prevLevelSkillsRef.current) {
       skills.forEach((skill, index) => {
         if (skill.level > 1 && skill.level !== (prevLevelSkillsRef.current?.[index])) {
-          toast.success(`Parabéns, a habilidade ${skill?.name} subiu de nível!`, {
+          toast.success(`A habilidade ${skill?.name} subiu de nível!`, {
             icon: <Sparkles className="text-(--secondary)" />,
             description: `Lv ${prevLevelSkillsRef.current?.[index]} -> Lv ${skill?.level}`
           });
