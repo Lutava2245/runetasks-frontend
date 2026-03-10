@@ -28,6 +28,7 @@ O **Runetasks Web** é a interface de usuário (Frontend) desenvolvida em Next.j
 2.  **Evolução de Habilidades (Skills):** Acompanhamento visual de progresso (XP e Nível) através de barras de progresso dinâmicas.
 3.  **Economia Gamificada (Loja e Recompensas):** Aquisição de Avatares cosméticos com moedas virtuais e resgate de recompensas customizadas.
 4.  **Feedback Visual Contínuo:** Celebração de "Level Up" e atualizações de status em tempo real.
+5.  **Gerenciamento de Perfil:** Atualização segura de credenciais de acesso (alteração de senha) utilizando modais interativos diretamente no painel do usuário.
 
 ---
 
@@ -85,7 +86,7 @@ runetasks-frontend/
 ├── app/              # Roteamento Next.js App Router (Dashboard, Profile, Store, etc.)
 ├── src/
 │   ├── assets/       # Recursos estáticos (ex: logo.png)
-│   ├── components/   # Componentes React (Modais, Formulários, Sidebar, AuthModal)
+│   ├── components/   # Componentes React (PasswordChangeModal, AuthModal, Sidebar)
 │   │   └── ui/       # Componentes primitivos genéricos (Button, Card, Badge, Progress)
 │   ├── contexts/     # Contextos globais (AuthContext para autenticação)
 │   ├── hooks/        # Hooks de negócio encapsulando React Query (useAvatars, useTasks)
@@ -171,3 +172,4 @@ O painel de aplicação do usuário é tratado como uma zona de acesso restrito,
 * **Injeção Transparente via Interceptors:** O módulo HTTP personalizado (criado em cima do Axios dentro do `src/services/api.ts`) atua como um Middleware do cliente. Todas as requisições destinadas à API Backend são interceptadas antes do envio para anexar autonomamente o Cabeçalho de Segurança HTTP: `Authorization: Bearer <SEU_TOKEN>`.
 * **Tratamento Resiliente de Expiração (Status 401):** Um token corrompido, adulterado ou que já tenha expirado o tempo limite parametrizado pelo servidor lançará uma resposta `HTTP 401 Unauthorized`. O nosso interceptor intercepta ativamente o erro antes de quebrar a aplicação. Ele dispara um alerta visível ao usuário `toast.error`, sanitiza de maneira forçada todos os registros contidos no armazenamento de sessão e executa o redirecionamento (kick) preventivo para a landing page (Login), estabilizando o ambiente sem travar a interface.
 * **Blindagem de Rotas (Router Guard):** O ecossistema dentro do escopo de caminho `app/dashboard/` é totalmente supervisionado pelo Layout Global que assina e consome os dados do `AuthContext`. O acesso digitado por barra de endereço, tentando burlar o fluxo natural sem um token viável ativo, não renderiza as telas; em vez disso, as rotas de layout redirecionam e expulsam forçadamente o acesso indesejado de volta à rota de abertura `/`.```
+* **Gestão Segura de Credenciais:** O fluxo de alteração de senha (`PasswordChangeModal`) realiza validações locais na interface (ex: garantir que a "Nova Senha" e a "Confirmação" sejam idênticas) antes mesmo de disparar a requisição HTTP segura (`PATCH /api/users/password`) pelo interceptor Axios, economizando processamento de rede para erros de digitação.
