@@ -2,12 +2,13 @@
 
 import { createContext, useContext, useState } from "react";
 import { getAuthenticatedUser } from "../services/userService";
-import { LoginRequest, LoginResponse } from "../types/auth";
+import { ForgotPasswordRequest, LoginRequest, LoginResponse, ResetPasswordRequest } from "../types/auth";
 import { UserResponse } from "../types/user";
 import { api } from "../services/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
 
 type AuthContextType = {
   user: UserResponse | null;
@@ -15,6 +16,8 @@ type AuthContextType = {
   loading: boolean | null;
   login: (data: LoginRequest) => Promise<void>;
   logout: () => void;
+  sendResetLink: ({ email }: ForgotPasswordRequest) => void;
+  resetPassword: ({ resetToken, newPassword }: ResetPasswordRequest) => Promise<AxiosResponse>;
   refreshUser: () => void;
 };
 
@@ -76,6 +79,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     router.push('/');
   };
 
+  const sendResetLink = async ({ email }: ForgotPasswordRequest) => {
+    await api.post('/auth/forgot-password', { email });
+  }
+
+  const resetPassword = async ({ resetToken, newPassword }: ResetPasswordRequest) => {
+    return await api.post('/auth/reset-password', {
+      resetToken,
+      newPassword
+    });
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -84,6 +98,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         loading: userLoading,
         login,
         logout,
+        sendResetLink,
+        resetPassword,
         refreshUser: () => { queryClient.invalidateQueries({ queryKey: ['user'] }) }
       }}
     >
