@@ -15,24 +15,29 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && !loading && user) {
       router.replace('/dashboard');
     }
-  }, [loading, user, router]);
+  }, [mounted, loading, user, router]);
 
-  if (loading || user) {
+  if (!mounted || loading || user) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <p className="text-xl">Verificando sessão...</p>
+        <p className="text-xl animate-pulse text-(--primary)">Invocando página...</p>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen">
-      <header className="fixed top-0 w-full shadow-md p-4 bg-background flex justify-between">
+      <header className="fixed top-0 w-full shadow-md p-4 bg-background flex justify-between items-center h-20">
         <Link href="/" className="flex items-center text-xl font-bold text-(--primary) hover:text-(--dark-primary) transition duration-150">
           <Image
             src={logo}

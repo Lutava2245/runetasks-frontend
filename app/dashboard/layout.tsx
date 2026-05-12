@@ -19,21 +19,22 @@ export default function DashboardLayout({ children }: Readonly<{
   const router = useRouter();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isDrawerCollapsed, setIsDrawerCollapsed] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (loading) {
-      return;
-    }
+    setMounted(true);
+  }, []);
 
-    if (!user) {
+  useEffect(() => {
+    if (mounted && !loading && !user) {
       router.replace('/');
     }
-  }, [loading, user, router]);
+  }, [mounted, loading, user, router]);
 
-  if (loading || !user) {
+  if (!mounted || loading || !user) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <p className="text-xl font-semibold">Carregando Dashboard...</p>
+        <p className="text-xl animate-pulse text-(--primary)">Sincronizando registros...</p>
       </div>
     );
   }
