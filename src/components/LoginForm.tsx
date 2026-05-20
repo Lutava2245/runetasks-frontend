@@ -5,23 +5,27 @@ import { useAuth } from '../contexts/AuthContext';
 import Button from './ui/Button';
 
 export default function LoginForm() {
-  const {login} = useAuth();
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username || !password) {
-      toast.info("Preencha o email/nickname e a senha.");
+      toast.info("Preencha o email/nickname e a senha");
       return;
     }
 
     try {
-      await login({username, password });
+      await login({ username, password });
       toast.success("Login realizado com sucesso!");
     } catch (error: any) {
-      toast.error("Ocorreu um erro ao realizar login")
-      console.error(error);
+      if (error.response?.status !== 401) {
+        toast.error("Email/Nickname ou senha inválidos")
+      } else {
+        toast.error("Ocorreu um erro ao realizar login")
+        console.error(error);
+      }
     }
   };
 
