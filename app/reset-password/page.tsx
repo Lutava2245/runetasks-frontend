@@ -8,10 +8,10 @@ import { useAuth } from "@/src/contexts/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { toast } from "sonner";
 
-export default function ResetPasswordPage() {
+function ResetPasswordCard() {
   const { resetPassword } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -55,6 +55,55 @@ export default function ResetPasswordPage() {
   }
 
   return (
+    <Card className="max-w-md bg-(--card)/50 border shadow-lg p-8">
+      <h2 className="text-2xl font-semibold mb-4">
+        Trocar Senha
+      </h2>
+      <p className="text-sm mb-2">
+        Crie uma nova senha para o seu perfil.
+      </p>
+      <p className="text-sm mb-6">
+        Ela deve possuir no mínimo <strong>8 caracteres</strong>, contendo obrigatoriamente <strong>letras maiúsculas, minúsculas e números</strong>.
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <FormField
+          id="password"
+          label="Nova Senha"
+          type="password"
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+          title="Mínimo de 8 caracteres, contendo letras maiusculas, mínusculas e números"
+          value={newPassword}
+          placeholder="••••••••"
+          onChange={e => setNewPassword(e.target.value)}
+          required
+        />
+
+        <FormField
+          id="confirmPassword"
+          label="Confirmar Nova Senha"
+          type="password"
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+          value={confirmPassword}
+          placeholder="••••••••"
+          onChange={e => setConfirmPassword(e.target.value)}
+          required
+        />
+
+        <Button
+          type="submit"
+          variant="primary"
+          className="w-full"
+        >
+          Salvar
+        </Button>
+      </form>
+    </Card>
+  )
+}
+
+export default function ResetPasswordPage() {
+  return (
     <div className="h-screen flex flex-col">
       <header className="top-0 w-full shadow-md p-4 bg-background flex justify-between items-center h-20">
         <Link href="/" className="flex items-center text-xl font-bold text-(--primary) hover:text-(--dark-primary) transition duration-150">
@@ -69,50 +118,13 @@ export default function ResetPasswordPage() {
       </header>
 
       <main className="flex-1 flex items-center justify-center p-10">
-        <Card className="max-w-md bg-(--card)/50 border shadow-lg p-8">
-          <h2 className="text-2xl font-semibold mb-4">
-            Trocar Senha
-          </h2>
-          <p className="text-sm mb-2">
-            Crie uma nova senha para o seu perfil.
-          </p>
-          <p className="text-sm mb-6">
-            Ela deve possuir no mínimo <strong>8 caracteres</strong>, contendo obrigatoriamente <strong>letras maiúsculas, minúsculas e números</strong>.
-          </p>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <FormField
-              id="password"
-              label="Nova Senha"
-              type="password"
-              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
-              title="Mínimo de 8 caracteres, contendo letras maiusculas, mínusculas e números"
-              value={newPassword}
-              placeholder="••••••••"
-              onChange={e => setNewPassword(e.target.value)}
-              required
-            />
-
-            <FormField
-              id="confirmPassword"
-              label="Confirmar Nova Senha"
-              type="password"
-              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
-              value={confirmPassword}
-              placeholder="••••••••"
-              onChange={e => setConfirmPassword(e.target.value)}
-              required
-            />
-
-            <Button
-              type="submit"
-              variant="primary"
-              className="w-full"
-            >
-              Salvar
-            </Button>
-          </form>
-        </Card>
+        <Suspense fallback= {
+          <div className="flex justify-center items-center h-screen">
+            <p className="text-xl animate-pulse text-(--primary)">Invocando página...</p>
+          </div>
+        }>
+          <ResetPasswordCard />
+        </Suspense>
       </main>
 
       <footer className="p-6 text-center bottom-0">
