@@ -15,6 +15,12 @@ const geistSans = Exo_2({
 export const metadata: Metadata = {
   title: "RuneTasks",
   description: "RuneTasks: Gerencie suas tarefas de forma engajante",
+  manifest: "./public/manifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "RuneTasks",
+  },
 };
 
 export default function RootLayout({
